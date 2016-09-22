@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import cn.weiyf.dleventbus.EventBus;
+import cn.weiyf.dlframe.base.loading.LoadingDialogFragment;
+import cn.weiyf.dlframe.base.loading.onDismissListener;
 import me.yokeyword.fragmentation.SupportFragment;
 
 /**
@@ -24,10 +26,13 @@ public abstract class BaseCompatFragment extends SupportFragment {
     protected int mScreenHeight = 0;
     protected float mScreenDensity = 0.0f;
 
+    protected LoadingDialogFragment mDialogFragment;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mDialogFragment = new LoadingDialogFragment();
         if (isBindEventBusHere()) {
             EventBus.getDefault().register(this);
         }
@@ -80,6 +85,18 @@ public abstract class BaseCompatFragment extends SupportFragment {
 
     public void showSnackBar(String string, Snackbar.Callback callback) {
         Snackbar.make(mRootView, string, Snackbar.LENGTH_SHORT).setCallback(callback).show();
+    }
+
+    public void showLoading() {
+        mDialogFragment.show(getSupportFragmentManager(), "loading");
+    }
+
+    public void showLoading(onDismissListener onDismissListener) {
+        mDialogFragment.show(getSupportFragmentManager(), "loading", onDismissListener);
+    }
+
+    public void dismissLoading() {
+        mDialogFragment.dismiss();
     }
 
 

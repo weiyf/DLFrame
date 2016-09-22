@@ -10,6 +10,8 @@ import android.widget.Toast;
 
 import cn.weiyf.dleventbus.EventBus;
 import cn.weiyf.dlframe.R;
+import cn.weiyf.dlframe.base.loading.LoadingDialogFragment;
+import cn.weiyf.dlframe.base.loading.onDismissListener;
 import me.yokeyword.fragmentation.SupportActivity;
 import me.yokeyword.fragmentation.anim.FragmentAnimator;
 
@@ -24,7 +26,7 @@ public abstract class BaseCompatActivity extends SupportActivity {
     protected int mScreenHeight = 0;
     protected float mScreenDensity = 0.0f;
 
-
+    protected LoadingDialogFragment mDialogFragment;
     private boolean mIsOverridePendingTransition;
 
     private TransitionMode mOverridePendingTransitionMode;
@@ -54,6 +56,7 @@ public abstract class BaseCompatActivity extends SupportActivity {
             }
         }
         super.onCreate(savedInstanceState);
+        mDialogFragment = new LoadingDialogFragment();
         if (isBindEventBusHere()) {
             EventBus.getDefault().register(this);
         }
@@ -116,6 +119,18 @@ public abstract class BaseCompatActivity extends SupportActivity {
         if (isBindEventBusHere()) {
             EventBus.getDefault().unregister(this);
         }
+    }
+
+    public void showLoading() {
+        mDialogFragment.show(getSupportFragmentManager(), "loading");
+    }
+
+    public void showLoading(onDismissListener onDismissListener) {
+        mDialogFragment.show(getSupportFragmentManager(), "loading", onDismissListener);
+    }
+
+    public void dismissLoading() {
+        mDialogFragment.dismiss();
     }
 
     public void showToast(String str) {

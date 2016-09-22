@@ -1,13 +1,27 @@
 package cn.weiyf.dlframe.sample;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.View;
 
-public class MainActivity extends AppCompatActivity {
+import cn.weiyf.dlframe.base.BaseCompatActivity;
+import cn.weiyf.dlframe.base.loading.onDismissListener;
+
+public class MainActivity extends BaseCompatActivity {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void initViews(@Nullable Bundle savedInstanceState) {
         setContentView(R.layout.activity_main);
+        findViewById(R.id.hello).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showLoading(new onDismissListener() {
+                    @Override
+                    public void onDismiss() {
+                        showToast("消失了");
+                    }
+                });
+            }
+        });
     }
 }
