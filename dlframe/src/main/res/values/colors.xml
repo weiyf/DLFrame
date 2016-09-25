@@ -4,4 +4,9 @@
     <color name="colorPrimary">#3BAFFF</color>
     <color name="colorPrimaryDark">#FF1E8BD6</color>
     <color name="colorAccent">#FF4081</color>
+
+    <color name="recoveryColorPrimary">#3BAFFF</color>
+    <color name="recoveryColorPrimaryDark">#FF1E8BD6</color>
+    <color name="recoveryColorAccent">#FF4081</color>
+    <color name="recoveryTextColor">#FFFFFF</color>
 </resources>

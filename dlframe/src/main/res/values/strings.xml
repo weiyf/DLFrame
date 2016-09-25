@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">DLFrame</string>
+    <string name="is_debug">false</string>
 </resources>

@@ -32,5 +32,7 @@ dependencies {
     compile "com.android.support:design:$supportVersion"
     compile "com.android.support:support-annotations:$supportVersion"
     compile 'com.github.weiyf:DLEventBus:1.0.01'
+    compile 'com.zxy.android:recovery:0.0.5'
+    compile 'com.orhanobut:logger:1.15'
 
 }

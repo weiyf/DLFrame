@@ -1,4 +1,4 @@
-package cn.weiyf.dlframe.base.loading;
+package cn.weiyf.dlframe.loading;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;

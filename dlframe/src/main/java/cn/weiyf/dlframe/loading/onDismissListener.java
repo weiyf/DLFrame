@@ -1,4 +1,4 @@
-package cn.weiyf.dlframe.base.loading;
+package cn.weiyf.dlframe.loading;
 
 public interface onDismissListener {
     void onDismiss();

@@ -9,8 +9,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import cn.weiyf.dleventbus.EventBus;
-import cn.weiyf.dlframe.base.loading.LoadingDialogFragment;
-import cn.weiyf.dlframe.base.loading.onDismissListener;
+import cn.weiyf.dlframe.loading.LoadingDialogFragment;
+import cn.weiyf.dlframe.loading.onDismissListener;
 import me.yokeyword.fragmentation.SupportFragment;
 
 /**
