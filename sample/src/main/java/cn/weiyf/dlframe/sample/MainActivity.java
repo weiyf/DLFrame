@@ -1,5 +1,6 @@
 package cn.weiyf.dlframe.sample;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -12,22 +13,11 @@ public class MainActivity extends BaseCompatActivity {
     @Override
     protected void initViews(@Nullable Bundle savedInstanceState) {
         setContentView(R.layout.activity_main);
-//        findViewById(R.id.hello).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                showLoading(new onDismissListener() {
-//                    @Override
-//                    public void onDismiss() {
-//                        showToast("消失了");
-//                    }
-//                });
-//            }
-//        });
-        View v = null;
-        v.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.hello).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Activity activity = null;
+                activity.finish();
             }
         });
     }

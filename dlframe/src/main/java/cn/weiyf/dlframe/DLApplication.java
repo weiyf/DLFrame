@@ -53,7 +53,7 @@ public abstract class DLApplication extends Application {
                 .recoverInBackground(false)
                 .recoverStack(isDebug())
                 .callback(new DLCrashCallback())
-                .silent(!isDebug(), Recovery.SilentMode.RECOVER_ACTIVITY_STACK)
+                .silent(!isDebug(), Recovery.SilentMode.RESTART)
                 .mainPage(clazz)
                 .init(this);
     }
