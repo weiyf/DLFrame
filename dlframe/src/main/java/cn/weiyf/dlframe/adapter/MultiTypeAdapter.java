@@ -2,12 +2,14 @@ package cn.weiyf.dlframe.adapter;
 
 import android.databinding.DataBindingUtil;
 import android.support.annotation.LayoutRes;
+import android.support.v4.util.ArrayMap;
+import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import cn.weiyf.dlframe.base.BaseAdapter;
@@ -16,58 +18,53 @@ import cn.weiyf.dlframe.base.BaseAdapter;
  * Created by weiyf on 2016/9/26.
  */
 
-public class MultiTypeAdapter<T> extends BaseAdapter<T> {
+public class MultiTypeAdapter extends BaseAdapter<Object> {
 
+    protected ArrayList<Integer> mDataViewType;
 
-    public interface MultiViewTyper {
-        int getViewType(Object item);
+    public MultiTypeAdapter() {
+        this(null);
     }
-
-    protected ArrayList<Integer> mCollectionViewType;
-
-    private HashMap<Integer, Integer> mItemTypeToLayoutMap = new HashMap<>();
-
 
     public MultiTypeAdapter(Map<Integer, Integer> viewTypeToLayoutMap) {
         mDatas = new ArrayList<>();
-        mCollectionViewType = new ArrayList<>();
+        mDataViewType = new ArrayList<>();
         if (viewTypeToLayoutMap != null && !viewTypeToLayoutMap.isEmpty()) {
             mItemTypeToLayoutMap.putAll(viewTypeToLayoutMap);
         }
     }
 
-    @SuppressWarnings("unchecked")
+
+    private ArrayMap<Integer, Integer> mItemTypeToLayoutMap = new ArrayMap<>();
+
+
     @Override
     public BindingViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new BindingViewHolder(
-                DataBindingUtil.inflate(mLayoutInflater, getLayoutRes(viewType), parent, false));
+        return new BindingViewHolder<>(
+                DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), getLayoutRes(viewType), null, false));
     }
 
-    public void addViewTypeToLayoutMap(Integer viewType, Integer layoutRes) {
+    public void addViewTypeToLayoutMap(Integer viewType, @LayoutRes Integer layoutRes) {
         mItemTypeToLayoutMap.put(viewType, layoutRes);
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        return mCollectionViewType.get(position);
-    }
 
-    public void add(T object,int viewType) {
+    public void add(int viewType, Object object) {
         synchronized (mLock) {
             if (null != mDatas) {
                 mDatas.add(object);
-                mCollectionViewType.add(viewType);
+                mDataViewType.add(viewType);
             }
         }
         notifyItemInserted(getItemCount() - 1);
     }
 
-    public void addAll(Collection<? extends T> collection, int viewType) {
+    public void addAll(int viewType, Collection<?> collection) {
         synchronized (mLock) {
             if (null != mDatas) {
                 mDatas.addAll(collection);
                 for (int i = 0; i < collection.size(); ++i) {
-                    mCollectionViewType.add(viewType);
+                    mDataViewType.add(viewType);
                 }
             }
         }
@@ -78,63 +75,99 @@ public class MultiTypeAdapter<T> extends BaseAdapter<T> {
         }
     }
 
-    @SafeVarargs
-    public final void addAll(int viewType, T... items) {
+    public final void addAll(int viewType, Object... items) {
         synchronized (mLock) {
             if (null != mDatas) {
                 Collections.addAll(mDatas, items);
+                for (int i = 0; i < items.length; ++i) {
+                    mDataViewType.add(viewType);
+                }
             }
         }
-        notifyItemRangeInserted(getItemCount() - items.length, getItemCount() - 1);
+        if (getItemCount() - items.length != 0) {
+            notifyItemRangeInserted(getItemCount() - items.length, items.length);
+        } else {
+            notifyDataSetChanged();
+        }
     }
 
-    public void insert(T object, int index, int viewType) {
+    public void addAll(MultiViewType multiViewType, List<?> items) {
+        synchronized (mLock) {
+            if (null != mDatas) {
+                mDatas.addAll(items);
+                for (Object item : items) {
+                    mDataViewType.add(multiViewType.getViewType(item));
+                }
+            }
+        }
+        if (getItemCount() - items.size() != 0) {
+            notifyItemRangeInserted(getItemCount() - items.size(), items.size());
+        } else {
+            notifyDataSetChanged();
+        }
+    }
+
+    public final void addAll(MultiViewType multiViewType, Object... items) {
+        synchronized (mLock) {
+            if (null != mDatas) {
+                Collections.addAll(mDatas, items);
+                for (Object item : items) {
+                    mDataViewType.add(multiViewType.getViewType(item));
+                }
+            }
+        }
+        if (getItemCount() - items.length != 0) {
+            notifyItemRangeInserted(getItemCount() - items.length, items.length);
+        } else {
+            notifyDataSetChanged();
+        }
+    }
+
+    public void insert(int index, Object object, int viewType) {
         synchronized (mLock) {
             if (null != mDatas) {
                 mDatas.add(index, object);
+                mDataViewType.add(index, viewType);
             }
         }
         notifyItemInserted(index);
     }
 
-    public void remove(int index, int viewType) {
-        if (index > 0 && index < getItemCount()) {
-            synchronized (mLock) {
-                mDatas.remove(index);
-            }
-            notifyItemRemoved(index);
-        } else {
-            throw new IllegalArgumentException("index less than zero or index more than list's size");
-        }
-    }
-
-
-    public void remove(T object, int viewType) {
-        removeIndex = -1;
-        removeSuccess = false;
+    public void update(List<Object> mDatas) {
         synchronized (mLock) {
-            for (int index = 0; index < getItemCount(); index++) {
-                if (object.equals(getItem(index))) {
-                    removeIndex = index;
-                }
-            }
-            if (mDatas != null) {
-                removeSuccess = mDatas.remove(object);
-            }
+            this.mDatas = mDatas;
         }
-        if (removeSuccess) {
-            notifyItemRemoved(removeIndex);
-        }
+        notifyDataSetChanged();
     }
 
+    @Override
+    public void remove(int index) {
+        mDataViewType.remove(index);
+        super.remove(index);
+    }
 
+    @Override
     public void clear() {
-        mCollectionViewType.clear();
+        mDataViewType.clear();
         super.clear();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return mDataViewType.get(position);
     }
 
     @LayoutRes
     protected int getLayoutRes(int viewType) {
-        return mItemTypeToLayoutMap.get(viewType);
+        if (mItemTypeToLayoutMap.containsKey(viewType)) {
+            return mItemTypeToLayoutMap.get(viewType);
+        } else {
+            return mItemTypeToLayoutMap.valueAt(0);
+        }
+    }
+
+
+    public interface MultiViewType {
+        int getViewType(Object item);
     }
 }

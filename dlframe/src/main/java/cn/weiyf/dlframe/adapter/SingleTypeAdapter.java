@@ -1,13 +1,14 @@
 package cn.weiyf.dlframe.adapter;
 
-import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.LayoutRes;
+import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import cn.weiyf.dlframe.base.BaseAdapter;
 
@@ -31,8 +32,9 @@ public class SingleTypeAdapter<T> extends BaseAdapter<T> {
     @SuppressWarnings("unchecked")
     @Override
     public BindingViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new BindingViewHolder(
-                DataBindingUtil.inflate(mLayoutInflater, getLayoutRes(), parent, false));
+        return new BindingViewHolder<>(
+                DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
+                        getLayoutRes(), parent, false));
     }
 
     public void add(T object) {
@@ -44,7 +46,7 @@ public class SingleTypeAdapter<T> extends BaseAdapter<T> {
         notifyItemInserted(getItemCount() - 1);
     }
 
-    public void addAll(Collection<? extends T> collection) {
+    public void addAll(List<? extends T> collection) {
         synchronized (mLock) {
             if (null != mDatas) {
                 mDatas.addAll(collection);
@@ -64,10 +66,14 @@ public class SingleTypeAdapter<T> extends BaseAdapter<T> {
                 Collections.addAll(mDatas, items);
             }
         }
-        notifyItemRangeInserted(getItemCount() - items.length, getItemCount() - 1);
+        if (getItemCount() - items.length != 0) {
+            notifyItemRangeInserted(getItemCount() - items.length, items.length);
+        } else {
+            notifyDataSetChanged();
+        }
     }
 
-    public void insert(T object, int index) {
+    public void insert(int index, T object) {
         synchronized (mLock) {
             if (null != mDatas) {
                 mDatas.add(index, object);
@@ -76,34 +82,11 @@ public class SingleTypeAdapter<T> extends BaseAdapter<T> {
         notifyItemInserted(index);
     }
 
-    public void remove(int index) {
-        if (index > 0 && index < getItemCount()) {
-            synchronized (mLock) {
-                mDatas.remove(index);
-            }
-            notifyItemRemoved(index);
-        } else {
-            throw new IllegalArgumentException("index less than zero or index more than list's size");
-        }
-    }
-
-
-    public void remove(T object) {
-        removeIndex = -1;
-        removeSuccess = false;
+    public void update(List<T> mDatas) {
         synchronized (mLock) {
-            for (int index = 0; index < getItemCount(); index++) {
-                if (object.equals(getItem(index))) {
-                    removeIndex = index;
-                }
-            }
-            if (mDatas != null) {
-                removeSuccess = mDatas.remove(object);
-            }
+            this.mDatas = mDatas;
         }
-        if (removeSuccess) {
-            notifyItemRemoved(removeIndex);
-        }
+        notifyDataSetChanged();
     }
 
     @LayoutRes

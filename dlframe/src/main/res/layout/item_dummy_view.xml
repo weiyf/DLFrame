@@ -2,9 +2,14 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
+
+        <variable
+            name="position"
+            type="java.lang.Integer"/>
+
         <variable
             name="presenter"
-            type="java.lang.Void"/>
+            type="cn.weiyf.dlframe.base.BaseAdapter.Presenter"/>
 
         <variable
             name="item"

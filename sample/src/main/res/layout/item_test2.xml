@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="position"
+            type="java.lang.Integer"/>
+
+        <variable
+            name="item"
+            type="cn.weiyf.dlframe.sample.entity.Test"/>
+
+        <variable
+            name="presenter"
+            type="cn.weiyf.dlframe.sample.MainActivity.Presenter"/>
+
+
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:onClick="@{() -> presenter.onItemClick(item)}"
+                  android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{String.valueOf(position + 1)}"/>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{item.name}"/>
+
+
+    </LinearLayout>
+
+</layout>
