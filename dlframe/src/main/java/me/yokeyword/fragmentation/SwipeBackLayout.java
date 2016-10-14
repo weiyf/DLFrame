@@ -20,9 +20,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
+
 import cn.weiyf.dlframe.R;
-import cn.weiyf.dlframe.base.BaseSwipeBackCompatActivity;
-import cn.weiyf.dlframe.base.BaseSwipeBackCompatFragment;
+
+import cn.weiyf.dlframe.base.BaseCompatActivity;
+import cn.weiyf.dlframe.base.BaseCompatFragment;
 
 
 /**
@@ -143,6 +145,11 @@ public class SwipeBackLayout extends FrameLayout {
         }
     }
 
+    @IntDef({EDGE_LEFT, EDGE_RIGHT, EDGE_ALL})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface EdgeOrientation {
+    }
+
     /**
      * Set a drawable used for edge shadow.
      */
@@ -184,6 +191,34 @@ public class SwipeBackLayout extends FrameLayout {
             return;
         }
         mListeners.remove(listener);
+    }
+
+    public interface OnSwipeListener {
+        /**
+         * Invoke when state change
+         *
+         * @param state flag to describe scroll state
+         * @see #STATE_IDLE
+         * @see #STATE_DRAGGING
+         * @see #STATE_SETTLING
+         */
+        void onDragStateChange(int state);
+
+        /**
+         * Invoke when edge touched
+         *
+         * @param oritentationEdgeFlag edge flag describing the edge being touched
+         * @see #EDGE_LEFT
+         * @see #EDGE_RIGHT
+         */
+        void onEdgeTouch(int oritentationEdgeFlag);
+
+        /**
+         * Invoke when scroll percent over the threshold for the first time
+         *
+         * @param scrollPercent scroll percent of this view
+         */
+        void onDragScrolled(float scrollPercent);
     }
 
     @Override
@@ -263,7 +298,7 @@ public class SwipeBackLayout extends FrameLayout {
         decor.addView(this);
     }
 
-    public void attachToFragment(BaseSwipeBackCompatFragment swipeBackFragment, View view) {
+    public void attachToFragment(BaseCompatFragment swipeBackFragment, View view) {
         addView(view);
         setFragment(swipeBackFragment, view);
     }
@@ -274,52 +309,6 @@ public class SwipeBackLayout extends FrameLayout {
 
     public void setEnableGesture(boolean enable) {
         mEnable = enable;
-    }
-
-    @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (!mEnable) return super.onInterceptTouchEvent(ev);
-        return mHelper.shouldInterceptTouchEvent(ev);
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        if (!mEnable) return super.onTouchEvent(event);
-        mHelper.processTouchEvent(event);
-        return true;
-    }
-
-    @IntDef({EDGE_LEFT, EDGE_RIGHT, EDGE_ALL})
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface EdgeOrientation {
-    }
-
-    public interface OnSwipeListener {
-        /**
-         * Invoke when state change
-         *
-         * @param state flag to describe scroll state
-         * @see #STATE_IDLE
-         * @see #STATE_DRAGGING
-         * @see #STATE_SETTLING
-         */
-        void onDragStateChange(int state);
-
-        /**
-         * Invoke when edge touched
-         *
-         * @param oritentationEdgeFlag edge flag describing the edge being touched
-         * @see #EDGE_LEFT
-         * @see #EDGE_RIGHT
-         */
-        void onEdgeTouch(int oritentationEdgeFlag);
-
-        /**
-         * Invoke when scroll percent over the threshold for the first time
-         *
-         * @param scrollPercent scroll percent of this view
-         */
-        void onDragScrolled(float scrollPercent);
     }
 
     class ViewDragCallback extends ViewDragHelper.Callback {
@@ -420,7 +409,7 @@ public class SwipeBackLayout extends FrameLayout {
                 return 1;
             }
             // SwipeBackActivity
-            if (mActivity != null && ((BaseSwipeBackCompatActivity) mActivity).swipeBackPriority()) {
+            if (mActivity != null && ((BaseCompatActivity) mActivity).swipeBackPriority()) {
                 return 1;
             }
             return 0;
@@ -460,5 +449,18 @@ public class SwipeBackLayout extends FrameLayout {
                 mCurrentSwipeOrientation = edgeFlags;
             }
         }
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (!mEnable) return super.onInterceptTouchEvent(ev);
+        return mHelper.shouldInterceptTouchEvent(ev);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (!mEnable) return super.onTouchEvent(event);
+        mHelper.processTouchEvent(event);
+        return true;
     }
 }

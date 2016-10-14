@@ -81,6 +81,11 @@ public abstract class DLApplication extends Application {
         public void exception(String exceptionType, String throwClassName, String throwMethodName, int throwLineNumber) {
             Logger.e("在(" + throwClassName.substring(throwClassName.lastIndexOf(".") + 1) + ".java:" + throwLineNumber + ")报了" + exceptionType);
         }
+
+        @Override
+        public void throwable(Throwable throwable) {
+
+        }
     }
 
 

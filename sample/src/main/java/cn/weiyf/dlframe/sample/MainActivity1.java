@@ -18,31 +18,12 @@ import cn.weiyf.dlframe.base.BaseSwipeBackCompatActivity;
 import cn.weiyf.dlframe.sample.databinding.ActivityMainBinding;
 import cn.weiyf.dlframe.sample.entity.Test;
 
-public class MainActivity extends BaseCompatActivity {
+public class MainActivity1 extends BaseCompatActivity {
 
     private ActivityMainBinding mMainBinding;
 
     @Override
     protected void initViews(@Nullable Bundle savedInstanceState) {
-        mMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        mMainBinding.setAdapter(new MultiTypeAdapter());
-        mMainBinding.getAdapter().setPresenter(new Presenter());
-        mMainBinding.getAdapter().addViewTypeToLayoutMap(1, R.layout.item_test);
-        mMainBinding.getAdapter().addViewTypeToLayoutMap(2, R.layout.item_test1);
-        mMainBinding.getAdapter().addViewTypeToLayoutMap(3, R.layout.item_test2);
-        mMainBinding.setLayoutManager(new LinearLayoutManager(this));
-
-        List<Test> tests = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
-            tests.add(new Test("小明", new Random().nextInt(10)));
-        }
-        mMainBinding.getAdapter().addAll(new MultiTypeAdapter.MultiViewType() {
-            @Override
-            public int getViewType(Object item) {
-                return ((Test) item).getType();
-            }
-        }, tests);
-        startActivity(new Intent(this, MainActivity1.class));
     }
 
 
