@@ -1,9 +1,6 @@
 package cn.weiyf.dlframe;
 
-import android.app.Activity;
 import android.app.Application;
-import android.net.Uri;
-import android.util.Log;
 
 import com.orhanobut.logger.LogLevel;
 import com.orhanobut.logger.Logger;
@@ -23,10 +20,19 @@ public abstract class DLApplication extends Application {
 
     private static String TAG = "DL_LOG";
 
+    public static DLApplication mInstance;
+
 
     @Override
     public void onCreate() {
         super.onCreate();
+        if (mInstance == null) {
+            synchronized (DLApplication.class) {
+                if (mInstance == null) {
+                    mInstance = DLApplication.this;
+                }
+            }
+        }
         initLogger(getLogTag());
         initRecovery(getMainPage());
     }

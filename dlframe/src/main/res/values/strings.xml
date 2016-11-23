@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">DLFrame</string>
     <string name="is_debug">true</string>
+    <string name="str_version_name_not_find">找不到版本号</string>
 </resources>

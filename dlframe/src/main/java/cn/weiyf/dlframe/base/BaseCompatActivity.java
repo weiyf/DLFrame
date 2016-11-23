@@ -9,12 +9,12 @@ import android.util.DisplayMetrics;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import cn.weiyf.dleventbus.EventBus;
 import cn.weiyf.dlframe.R;
 import cn.weiyf.dlframe.loading.LoadingDialogFragment;
 import cn.weiyf.dlframe.loading.onDismissListener;
+import cn.weiyf.dlframe.utils.BaseCommonUtils;
 import me.yokeyword.fragmentation.SupportActivity;
 import me.yokeyword.fragmentation.SwipeBackLayout;
 import me.yokeyword.fragmentation.anim.FragmentAnimator;
@@ -181,7 +181,7 @@ public abstract class BaseCompatActivity extends SupportActivity {
     }
 
     public void showToast(String str) {
-        Toast.makeText(getApplicationContext(), str, Toast.LENGTH_SHORT).show();
+        BaseCommonUtils.showToast(str);
     }
 
     public void showSnackBar(View contentView, String string) {
