@@ -21,7 +21,6 @@ import me.yokeyword.fragmentation.SwipeBackLayout;
 /**
  * Created by weiyf on 2016/7/20.
  */
-
 public abstract class BaseCompatFragment extends SupportFragment {
 
     protected int mScreenWidth = 0;
