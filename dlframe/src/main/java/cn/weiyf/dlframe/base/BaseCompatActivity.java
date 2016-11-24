@@ -186,7 +186,6 @@ public abstract class BaseCompatActivity extends SupportActivity {
 
     public void showSnackBar(View contentView, String string) {
         Snackbar.make(contentView, string, Snackbar.LENGTH_SHORT).show();
-
     }
 
     public void showSnackBar(View contentView, String string, String action, View.OnClickListener clickListener) {

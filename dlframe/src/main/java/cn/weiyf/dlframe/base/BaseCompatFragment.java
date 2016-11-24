@@ -10,20 +10,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.orhanobut.logger.Logger;
+
 import cn.weiyf.dleventbus.EventBus;
 import cn.weiyf.dlframe.loading.LoadingDialogFragment;
 import cn.weiyf.dlframe.loading.onDismissListener;
 import me.yokeyword.fragmentation.SupportFragment;
 import me.yokeyword.fragmentation.SwipeBackLayout;
 
+import static android.R.attr.action;
+
 /**
  * Created by weiyf on 2016/7/20.
  */
 
 public abstract class BaseCompatFragment extends SupportFragment {
-
-    protected View mRootView;
-
 
     protected int mScreenWidth = 0;
     protected int mScreenHeight = 0;
@@ -116,16 +117,27 @@ public abstract class BaseCompatFragment extends SupportFragment {
     }
 
     public void showSnackBar(String string) {
-        Snackbar.make(mRootView, string, Snackbar.LENGTH_SHORT).show();
-
+        if (getView() != null) {
+            Snackbar.make(getView(), string, Snackbar.LENGTH_SHORT).show();
+        } else {
+            Logger.e("getView() return null or it has no layout");
+        }
     }
 
     public void showSnackBar(String string, String action, View.OnClickListener clickListener) {
-        Snackbar.make(mRootView, string, Snackbar.LENGTH_SHORT).setAction(action, clickListener).show();
+        if (getView() != null) {
+            Snackbar.make(getView(), string, Snackbar.LENGTH_SHORT).setAction(action, clickListener).show();
+        } else {
+            Logger.e("getView() return null or it has no layout");
+        }
     }
 
     public void showSnackBar(String string, Snackbar.Callback callback) {
-        Snackbar.make(mRootView, string, Snackbar.LENGTH_SHORT).setCallback(callback).show();
+        if (getView() != null) {
+            Snackbar.make(getView(), string, Snackbar.LENGTH_SHORT).setCallback(callback).show();
+        } else {
+            Logger.e("getView() return null or it has no layout");
+        }
     }
 
     public void showLoading() {
