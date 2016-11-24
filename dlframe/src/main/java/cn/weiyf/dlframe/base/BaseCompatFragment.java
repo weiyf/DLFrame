@@ -18,8 +18,6 @@ import cn.weiyf.dlframe.loading.onDismissListener;
 import me.yokeyword.fragmentation.SupportFragment;
 import me.yokeyword.fragmentation.SwipeBackLayout;
 
-import static android.R.attr.action;
-
 /**
  * Created by weiyf on 2016/7/20.
  */
@@ -126,7 +124,7 @@ public abstract class BaseCompatFragment extends SupportFragment {
 
     public void showSnackBar(String string, String action, View.OnClickListener clickListener) {
         if (getView() != null) {
-            Snackbar.make(getView(), string, Snackbar.LENGTH_SHORT).setAction(action, clickListener).show();
+            Snackbar.make(getView(), string, Snackbar.LENGTH_INDEFINITE).setAction(action, clickListener).show();
         } else {
             Logger.e("getView() return null or it has no layout");
         }

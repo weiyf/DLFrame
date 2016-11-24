@@ -189,7 +189,7 @@ public abstract class BaseCompatActivity extends SupportActivity {
     }
 
     public void showSnackBar(View contentView, String string, String action, View.OnClickListener clickListener) {
-        Snackbar.make(contentView, string, Snackbar.LENGTH_SHORT).setAction(action, clickListener).show();
+        Snackbar.make(contentView, string, Snackbar.LENGTH_INDEFINITE).setAction(action, clickListener).show();
     }
 
     public void showSnackBar(View contentView, String string, Snackbar.Callback callback) {
