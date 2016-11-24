@@ -184,16 +184,29 @@ public abstract class BaseCompatActivity extends SupportActivity {
         BaseCommonUtils.showToast(str);
     }
 
-    public void showSnackBar(View contentView, String string) {
-        Snackbar.make(contentView, string, Snackbar.LENGTH_SHORT).show();
+    public Snackbar showSnackBar(View contentView, String string) {
+        Snackbar snackbar = Snackbar.make(contentView, string, Snackbar.LENGTH_SHORT);
+        snackbar.show();
+        return snackbar;
     }
 
-    public void showSnackBar(View contentView, String string, String action, View.OnClickListener clickListener) {
-        Snackbar.make(contentView, string, Snackbar.LENGTH_INDEFINITE).setAction(action, clickListener).show();
+    public Snackbar showSnackBar(View contentView, String string, String action, View.OnClickListener clickListener) {
+        Snackbar snackbar = Snackbar.make(contentView, string, Snackbar.LENGTH_INDEFINITE).setAction(action, clickListener);
+        snackbar.show();
+        return snackbar;
     }
 
-    public void showSnackBar(View contentView, String string, Snackbar.Callback callback) {
-        Snackbar.make(contentView, string, Snackbar.LENGTH_SHORT).setCallback(callback).show();
+    public Snackbar showSnackBar(View contentView, String string, String action, View.OnClickListener clickListener, Snackbar.Callback callback) {
+        Snackbar snackbar = Snackbar.make(contentView, string, Snackbar.LENGTH_INDEFINITE)
+                .setAction(action, clickListener).setCallback(callback);
+        snackbar.show();
+        return snackbar;
+    }
+
+    public Snackbar showSnackBar(View contentView, String string, Snackbar.Callback callback) {
+        Snackbar snackbar = Snackbar.make(contentView, string, Snackbar.LENGTH_SHORT).setCallback(callback);
+        snackbar.show();
+        return snackbar;
     }
 
     public boolean isOverridePendingTransition() {

@@ -114,27 +114,48 @@ public abstract class BaseCompatFragment extends SupportFragment {
         Toast.makeText(_mActivity.getApplicationContext(), strings, Toast.LENGTH_SHORT).show();
     }
 
-    public void showSnackBar(String string) {
+    public Snackbar showSnackBar(String string) {
         if (getView() != null) {
-            Snackbar.make(getView(), string, Snackbar.LENGTH_SHORT).show();
+            Snackbar snackbar = Snackbar.make(getView(), string, Snackbar.LENGTH_SHORT);
+            snackbar.show();
+            return snackbar;
         } else {
             Logger.e("getView() return null or it has no layout");
+            return null;
         }
     }
 
-    public void showSnackBar(String string, String action, View.OnClickListener clickListener) {
+    public Snackbar showSnackBar(String string, String action, View.OnClickListener clickListener) {
         if (getView() != null) {
-            Snackbar.make(getView(), string, Snackbar.LENGTH_INDEFINITE).setAction(action, clickListener).show();
+            Snackbar snackbar = Snackbar.make(getView(), string, Snackbar.LENGTH_INDEFINITE).setAction(action, clickListener);
+            snackbar.show();
+            return snackbar;
         } else {
             Logger.e("getView() return null or it has no layout");
+            return null;
         }
     }
 
-    public void showSnackBar(String string, Snackbar.Callback callback) {
+    public Snackbar showSnackBar(String string, String action, View.OnClickListener clickListener, Snackbar.Callback callback) {
         if (getView() != null) {
-            Snackbar.make(getView(), string, Snackbar.LENGTH_SHORT).setCallback(callback).show();
+            Snackbar snackbar = Snackbar.make(getView(), string, Snackbar.LENGTH_INDEFINITE)
+                    .setAction(action, clickListener).setCallback(callback);
+            snackbar.show();
+            return snackbar;
         } else {
             Logger.e("getView() return null or it has no layout");
+            return null;
+        }
+    }
+
+    public Snackbar showSnackBar(String string, Snackbar.Callback callback) {
+        if (getView() != null) {
+            Snackbar snackbar = Snackbar.make(getView(), string, Snackbar.LENGTH_SHORT).setCallback(callback);
+            snackbar.show();
+            return snackbar;
+        } else {
+            Logger.e("getView() return null or it has no layout");
+            return null;
         }
     }
 
