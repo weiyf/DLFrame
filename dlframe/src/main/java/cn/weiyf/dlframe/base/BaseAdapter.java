@@ -1,12 +1,7 @@
 package cn.weiyf.dlframe.base;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -65,7 +60,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<BindingViewHol
     }
 
 
-    public void remove(T object) {
+    public int remove(T object) {
         removeIndex = -1;
         removeSuccess = false;
         synchronized (mLock) {
@@ -81,6 +76,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<BindingViewHol
         if (removeSuccess) {
             notifyItemRemoved(removeIndex);
         }
+        return removeIndex;
     }
 
 

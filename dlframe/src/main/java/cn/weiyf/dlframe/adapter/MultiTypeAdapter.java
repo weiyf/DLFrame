@@ -22,9 +22,12 @@ public class MultiTypeAdapter extends BaseAdapter<Object> {
 
     protected ArrayList<Integer> mDataViewType;
 
+    private ArrayMap<Integer, Integer> mItemTypeToLayoutMap = new ArrayMap<>();
+
     public MultiTypeAdapter() {
         this(null);
     }
+
 
     public MultiTypeAdapter(Map<Integer, Integer> viewTypeToLayoutMap) {
         mDatas = new ArrayList<>();
@@ -33,9 +36,6 @@ public class MultiTypeAdapter extends BaseAdapter<Object> {
             mItemTypeToLayoutMap.putAll(viewTypeToLayoutMap);
         }
     }
-
-
-    private ArrayMap<Integer, Integer> mItemTypeToLayoutMap = new ArrayMap<>();
 
 
     @Override
@@ -49,10 +49,10 @@ public class MultiTypeAdapter extends BaseAdapter<Object> {
     }
 
 
-    public void add(int viewType, Object object) {
+    public void add(int viewType, Object item) {
         synchronized (mLock) {
             if (null != mDatas) {
-                mDatas.add(object);
+                mDatas.add(item);
                 mDataViewType.add(viewType);
             }
         }
@@ -123,27 +123,44 @@ public class MultiTypeAdapter extends BaseAdapter<Object> {
         }
     }
 
-    public void insert(int index, Object object, int viewType) {
+    public void insert(int position, Object item, int viewType) {
         synchronized (mLock) {
             if (null != mDatas) {
-                mDatas.add(index, object);
-                mDataViewType.add(index, viewType);
+                mDatas.add(position, item);
+                mDataViewType.add(position, viewType);
             }
         }
-        notifyItemInserted(index);
+        notifyItemInserted(position);
     }
 
-    public void update(List<Object> mDatas) {
+    public void insert(int position, List<?> objects, int viewType) {
+        mDatas.addAll(position, objects);
+        for (int i = 0; i < objects.size(); i++) {
+            mDataViewType.add(position + 1, viewType);
+        }
+        notifyItemRangeChanged(position, objects.size() - position);
+    }
+
+
+    public void update(MultiViewType multiViewType, List<Object> mDatas) {
         synchronized (mLock) {
-            this.mDatas = mDatas;
+            if (null != mDatas) {
+                this.mDatas = mDatas;
+                mDataViewType.clear();
+                for (Object item : mDatas) {
+                    mDataViewType.add(multiViewType.getViewType(item));
+                }
+
+            }
         }
         notifyDataSetChanged();
     }
 
+
     @Override
-    public void remove(int index) {
-        mDataViewType.remove(index);
-        super.remove(index);
+    public void remove(int position) {
+        mDataViewType.remove(position);
+        super.remove(position);
     }
 
     @Override
