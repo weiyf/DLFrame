@@ -41,7 +41,7 @@ public class MultiTypeAdapter extends BaseAdapter<Object> {
     @Override
     public BindingViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new BindingViewHolder<>(
-                DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), getLayoutRes(viewType), null, false));
+                DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), getLayoutRes(viewType), parent, false));
     }
 
     public void addViewTypeToLayoutMap(Integer viewType, @LayoutRes Integer layoutRes) {
