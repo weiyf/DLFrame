@@ -9,7 +9,7 @@
 
         <variable
             name="presenter"
-            type="cn.weiyf.dlframe.base.BaseAdapter.Presenter"/>
+            type="cn.weiyf.dlframe.base.BaseDBAdapter.Presenter"/>
 
         <variable
             name="item"

@@ -7,18 +7,20 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import cn.weiyf.dlframe.base.BaseAdapter;
+import cn.weiyf.dlframe.base.BaseDBAdapter;
+import cn.weiyf.dlframe.base.BindingViewHolder;
+import cn.weiyf.dlframe.loadmore.LoadMoreView;
+
 
 /**
  * Created by weiyf on 2016/9/26.
  */
 
-public class MultiTypeAdapter extends BaseAdapter<Object> {
+public class MultiTypeAdapter extends BaseDBAdapter<Object> {
 
     protected ArrayList<Integer> mDataViewType;
 
@@ -39,7 +41,7 @@ public class MultiTypeAdapter extends BaseAdapter<Object> {
 
 
     @Override
-    public BindingViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    protected BindingViewHolder createDBViewHolder(ViewGroup parent, int viewType) {
         return new BindingViewHolder<>(
                 DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), getLayoutRes(viewType), parent, false));
     }
@@ -50,109 +52,96 @@ public class MultiTypeAdapter extends BaseAdapter<Object> {
 
 
     public void add(int viewType, Object item) {
-        synchronized (mLock) {
-            if (null != mDatas) {
-                mDatas.add(item);
+        if (null != mDatas) {
+            mDatas.add(item);
+            mDataViewType.add(viewType);
+            notifyItemInserted(mDatas.size() + getHeaderLayoutCount());
+        }
+    }
+
+    public void add(int position, int viewType, Object data) {
+        mDatas.add(position, data);
+        mDataViewType.add(viewType);
+        notifyItemInserted(position + getHeaderLayoutCount());
+        compatibilityDataSizeChanged(1);
+    }
+
+    public void addAll(int viewType, List<?> newData) {
+        if (null != mDatas) {
+            mDatas.addAll(newData);
+            for (int i = 0; i < newData.size(); ++i) {
                 mDataViewType.add(viewType);
             }
-        }
-        notifyItemInserted(getItemCount() - 1);
-    }
-
-    public void addAll(int viewType, Collection<?> collection) {
-        synchronized (mLock) {
-            if (null != mDatas) {
-                mDatas.addAll(collection);
-                for (int i = 0; i < collection.size(); ++i) {
-                    mDataViewType.add(viewType);
-                }
-            }
-        }
-        if (getItemCount() - collection.size() != 0) {
-            notifyItemRangeInserted(getItemCount() - collection.size(), collection.size());
-        } else {
-            notifyDataSetChanged();
+            notifyItemRangeInserted(mDatas.size() - newData.size() + getHeaderLayoutCount(), newData.size());
+            compatibilityDataSizeChanged(newData.size());
         }
     }
 
-    public final void addAll(int viewType, Object... items) {
-        synchronized (mLock) {
-            if (null != mDatas) {
-                Collections.addAll(mDatas, items);
-                for (int i = 0; i < items.length; ++i) {
-                    mDataViewType.add(viewType);
-                }
+    public final void addAll(int viewType, Object... newDatas) {
+        if (null != mDatas) {
+            Collections.addAll(mDatas, newDatas);
+            for (int i = 0; i < newDatas.length; ++i) {
+                mDataViewType.add(viewType);
             }
-        }
-        if (getItemCount() - items.length != 0) {
-            notifyItemRangeInserted(getItemCount() - items.length, items.length);
-        } else {
-            notifyDataSetChanged();
+            notifyItemRangeInserted(mDatas.size() - newDatas.length + getHeaderLayoutCount(), newDatas.length);
+            compatibilityDataSizeChanged(newDatas.length);
         }
     }
 
-    public void addAll(MultiViewType multiViewType, List<?> items) {
-        synchronized (mLock) {
-            if (null != mDatas) {
-                mDatas.addAll(items);
-                for (Object item : items) {
-                    mDataViewType.add(multiViewType.getViewType(item));
-                }
+    public void addAll(MultiViewType multiViewType, List<?> newDatas) {
+        if (null != mDatas) {
+            mDatas.addAll(newDatas);
+            for (Object item : newDatas) {
+                mDataViewType.add(multiViewType.getViewType(item));
             }
-        }
-        if (getItemCount() - items.size() != 0) {
-            notifyItemRangeInserted(getItemCount() - items.size(), items.size());
-        } else {
-            notifyDataSetChanged();
+            notifyItemRangeInserted(mDatas.size() - newDatas.size() + getHeaderLayoutCount(), newDatas.size());
+            compatibilityDataSizeChanged(newDatas.size());
         }
     }
 
-    public final void addAll(MultiViewType multiViewType, Object... items) {
-        synchronized (mLock) {
-            if (null != mDatas) {
-                Collections.addAll(mDatas, items);
-                for (Object item : items) {
-                    mDataViewType.add(multiViewType.getViewType(item));
-                }
+    public final void addAll(MultiViewType multiViewType, Object... newDatas) {
+        if (null != mDatas) {
+            Collections.addAll(mDatas, newDatas);
+            for (Object item : newDatas) {
+                mDataViewType.add(multiViewType.getViewType(item));
             }
-        }
-        if (getItemCount() - items.length != 0) {
-            notifyItemRangeInserted(getItemCount() - items.length, items.length);
-        } else {
-            notifyDataSetChanged();
+            notifyItemRangeInserted(mDatas.size() - newDatas.length + getHeaderLayoutCount(), newDatas.length);
+            compatibilityDataSizeChanged(newDatas.length);
         }
     }
 
     public void insert(int position, Object item, int viewType) {
-        synchronized (mLock) {
-            if (null != mDatas) {
-                mDatas.add(position, item);
-                mDataViewType.add(position, viewType);
-            }
+        if (null != mDatas) {
+            mDatas.add(position, item);
+            mDataViewType.add(position, viewType);
+            notifyItemInserted(mDatas.size() + getHeaderLayoutCount());
+            compatibilityDataSizeChanged(1);
         }
-        notifyItemInserted(position);
     }
 
-    public void insert(int position, List<?> objects, int viewType) {
-        mDatas.addAll(position, objects);
-        for (int i = 0; i < objects.size(); i++) {
+    public void insert(int position, List<?> datas, int viewType) {
+        mDatas.addAll(position, datas);
+        for (int i = 0; i < datas.size(); i++) {
             mDataViewType.add(position + 1, viewType);
         }
-        notifyItemRangeChanged(position, objects.size() - position);
+        notifyItemRangeInserted(position + getHeaderLayoutCount(), datas.size());
+        compatibilityDataSizeChanged(datas.size());
     }
 
 
     public void update(MultiViewType multiViewType, List<Object> mDatas) {
-        synchronized (mLock) {
-            if (null != mDatas) {
-                this.mDatas = mDatas;
-                mDataViewType.clear();
-                for (Object item : mDatas) {
-                    mDataViewType.add(multiViewType.getViewType(item));
-                }
-
-            }
+        this.mDatas = mDatas == null ? Collections.EMPTY_LIST : mDatas;
+        mDataViewType.clear();
+        for (Object item : mDatas) {
+            mDataViewType.add(multiViewType.getViewType(item));
         }
+        if (mRequestLoadMoreListener != null) {
+            mNextLoadEnable = true;
+            mLoadMoreEnable = true;
+            mLoading = false;
+            mLoadMoreView.setLoadMoreStatus(LoadMoreView.STATUS_DEFAULT);
+        }
+        mLastPosition = -1;
         notifyDataSetChanged();
     }
 

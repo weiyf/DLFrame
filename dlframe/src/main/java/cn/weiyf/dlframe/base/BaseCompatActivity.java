@@ -10,7 +10,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import cn.weiyf.dleventbus.EventBus;
 import cn.weiyf.dlframe.R;
 import cn.weiyf.dlframe.loading.LoadingDialogFragment;
 import cn.weiyf.dlframe.loading.onDismissListener;
@@ -63,9 +62,6 @@ public abstract class BaseCompatActivity extends SupportActivity {
         }
         super.onCreate(savedInstanceState);
         mDialogFragment = new LoadingDialogFragment();
-        if (isBindEventBusHere()) {
-            EventBus.getDefault().register(this);
-        }
         BaseAppManager.getInstance().addActivity(this);
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -160,13 +156,6 @@ public abstract class BaseCompatActivity extends SupportActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (isBindEventBusHere()) {
-            EventBus.getDefault().unregister(this);
-        }
-    }
 
     public void showLoading() {
         mDialogFragment.show(getSupportFragmentManager(), "loading");

@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
 
-import cn.weiyf.dleventbus.EventBus;
 import cn.weiyf.dlframe.loading.LoadingDialogFragment;
 import cn.weiyf.dlframe.loading.onDismissListener;
 import me.yokeyword.fragmentation.SupportFragment;
@@ -36,9 +35,6 @@ public abstract class BaseCompatFragment extends SupportFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mDialogFragment = new LoadingDialogFragment();
-        if (isBindEventBusHere()) {
-            EventBus.getDefault().register(this);
-        }
         if (isSwipeBackEnable()) {
             onFragmentCreate();
         }
@@ -63,9 +59,6 @@ public abstract class BaseCompatFragment extends SupportFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (isBindEventBusHere()) {
-            EventBus.getDefault().unregister(this);
-        }
         hideSoftInput();
     }
 

@@ -6,92 +6,103 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import cn.weiyf.dlframe.base.BaseAdapter;
+import cn.weiyf.dlframe.base.BaseDBAdapter;
+import cn.weiyf.dlframe.base.BindingViewHolder;
+import cn.weiyf.dlframe.loadmore.LoadMoreView;
+
 
 /**
- * Created by weiyf on 2016/9/26.
+ * Created by Administrator on 2017/1/11.
  */
 
-public class SingleTypeAdapter<T> extends BaseAdapter<T> {
+public class SingleTypeAdapter<T> extends BaseDBAdapter<T> {
+
 
     protected int mLayoutRes;
 
-    public interface Presenter<T> extends BaseAdapter.Presenter {
-        void onItemClick(T t);
+    @Override
+    protected BindingViewHolder createDBViewHolder(ViewGroup parent, int viewType) {
+        return new BindingViewHolder<>(
+                DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
+                        getLayoutRes(), parent, false));
     }
+
 
     public SingleTypeAdapter(int layoutRes) {
         mDatas = new ArrayList<>();
         mLayoutRes = layoutRes;
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public BindingViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new BindingViewHolder<>(
-                DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
-                        getLayoutRes(), parent, false));
-    }
 
     public void add(T object) {
-        synchronized (mLock) {
-            if (null != mDatas) {
-                mDatas.add(object);
-            }
+        if (null != mDatas) {
+            mDatas.add(object);
+            notifyItemInserted(mDatas.size() + getHeaderLayoutCount());
+            compatibilityDataSizeChanged(1);
         }
-        notifyItemInserted(getItemCount() - 1);
     }
 
-    public void addAll(List<? extends T> collection) {
-        synchronized (mLock) {
-            if (null != mDatas) {
-                mDatas.addAll(collection);
-            }
-        }
-        if (getItemCount() - collection.size() != 0) {
-            notifyItemRangeInserted(getItemCount() - collection.size(), collection.size());
-        } else {
-            notifyDataSetChanged();
+    public void add(int position, T data) {
+        mDatas.add(position, data);
+        notifyItemInserted(position + getHeaderLayoutCount());
+        compatibilityDataSizeChanged(1);
+    }
+
+    public void addAll(List<? extends T> newData) {
+        if (null != mDatas) {
+            mDatas.addAll(newData);
+            notifyItemRangeInserted(mDatas.size() - newData.size() + getHeaderLayoutCount(), newData.size());
+            compatibilityDataSizeChanged(newData.size());
         }
     }
 
     @SafeVarargs
-    public final void addAll(T... items) {
-        synchronized (mLock) {
-            if (null != mDatas) {
-                Collections.addAll(mDatas, items);
-            }
-        }
-        if (getItemCount() - items.length != 0) {
-            notifyItemRangeInserted(getItemCount() - items.length, items.length);
-        } else {
-            notifyDataSetChanged();
+    public final void addAll(T... newDatas) {
+        if (null != mDatas) {
+            Collections.addAll(mDatas, newDatas);
+            notifyItemRangeInserted(mDatas.size() - newDatas.length + getHeaderLayoutCount(), newDatas.length);
+            compatibilityDataSizeChanged(newDatas.length);
         }
     }
 
-    public void insert(int index, T object) {
-        synchronized (mLock) {
-            if (null != mDatas) {
-                mDatas.add(index, object);
-            }
+    public void insert(int position, T object) {
+        if (null != mDatas) {
+            mDatas.add(position, object);
+            notifyItemInserted(mDatas.size() + getHeaderLayoutCount());
+            compatibilityDataSizeChanged(1);
         }
-        notifyItemInserted(index);
+    }
+
+    public void insert(int position, List<T> datas) {
+        if (null != mDatas) {
+            mDatas.addAll(position, datas);
+            notifyItemRangeInserted(position + getHeaderLayoutCount(), datas.size());
+            compatibilityDataSizeChanged(datas.size());
+        }
     }
 
     public void update(List<T> mDatas) {
-        synchronized (mLock) {
-            this.mDatas = mDatas;
+        this.mDatas = mDatas == null ? Collections.EMPTY_LIST : mDatas;
+        if (mRequestLoadMoreListener != null) {
+            mNextLoadEnable = true;
+            mLoadMoreEnable = true;
+            mLoading = false;
+            mLoadMoreView.setLoadMoreStatus(LoadMoreView.STATUS_DEFAULT);
         }
+        mLastPosition = -1;
         notifyDataSetChanged();
+    }
+
+    public void update(int position, T data) {
+        mDatas.set(position, data);
+        notifyItemChanged(position + getHeaderLayoutCount());
     }
 
     @LayoutRes
     protected int getLayoutRes() {
         return mLayoutRes;
     }
-
 }
