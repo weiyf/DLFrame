@@ -125,7 +125,7 @@ public abstract class BaseDBAdapter<T> extends RecyclerView.Adapter<BindingViewH
             case FOOTER_VIEW:
                 return new BindingViewHolder<>(DataBindingUtil.bind(mFooterLayout));
             default:
-                return createViewHolder(parent, viewType);
+                return createDBViewHolder(parent, viewType);
         }
     }
 
