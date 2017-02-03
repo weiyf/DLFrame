@@ -18,18 +18,18 @@ import cn.weiyf.dlframe.utils.BaseCommonUtils;
 import io.reactivex.observers.DisposableObserver;
 import retrofit2.adapter.rxjava2.HttpException;
 
-public abstract class DLObserver<T> extends DisposableObserver<T> {
+public abstract class BaseObserver<T> extends DisposableObserver<T> {
 
 
     private FragmentManager mFragmentManager;
     private LoadingDialogFragment mLoadingDialogFragment;
     private boolean mIsShowLoading = true;
 
-    public DLObserver(FragmentManager fragmentManager) {
+    public BaseObserver(FragmentManager fragmentManager) {
         mFragmentManager = fragmentManager;
     }
 
-    public DLObserver(FragmentManager fragmentManager, boolean isShowLoading) {
+    public BaseObserver(FragmentManager fragmentManager, boolean isShowLoading) {
         mIsShowLoading = isShowLoading;
         mFragmentManager = fragmentManager;
     }
