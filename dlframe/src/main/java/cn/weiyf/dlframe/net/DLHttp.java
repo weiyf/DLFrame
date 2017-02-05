@@ -6,7 +6,6 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
-import cn.weiyf.dlframe.BuildConfig;
 import cn.weiyf.dlframe.DLApplication;
 import cn.weiyf.dlframe.R;
 import okhttp3.Cache;
@@ -137,7 +136,7 @@ public class DLHttp {
                 mRetrofit.addConverterFactory(GsonConverterFactory.create());
             }
             // test7
-            if (BuildConfig.DEBUG) {
+            if (DLApplication.mInstance.isDebug()) {
                 // test8
                 if (mLoggingInterceptor != null) {
                     // test9

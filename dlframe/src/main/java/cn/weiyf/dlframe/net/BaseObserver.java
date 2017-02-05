@@ -12,7 +12,7 @@ import org.json.JSONException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
-import cn.weiyf.dlframe.BuildConfig;
+import cn.weiyf.dlframe.DLApplication;
 import cn.weiyf.dlframe.loading.LoadingDialogFragment;
 import cn.weiyf.dlframe.utils.BaseCommonUtils;
 import io.reactivex.observers.DisposableObserver;
@@ -69,7 +69,7 @@ public abstract class BaseObserver<T> extends DisposableObserver<T> {
         if (mIsShowLoading) {
             dismissLoading();
         }
-        if (BuildConfig.DEBUG) {
+        if (DLApplication.mInstance.isDebug()) {
             Logger.e(e.getMessage());
         }
         if (e instanceof HttpException) {
