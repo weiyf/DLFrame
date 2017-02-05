@@ -119,30 +119,20 @@ public class DLHttp {
 
 
         public <S> S create(Class<S> serviceClass) {
-            // test1
             if (!TextUtils.isEmpty(mBaseUrl)) {
-                // test2
                 mRetrofit.baseUrl(mBaseUrl);
             } else {
-                // test3
                 throw new IllegalArgumentException("please setup the baseUrl");
             }
-            // test4
             if (mFactory != null) {
-                // test5
                 mRetrofit.addConverterFactory(mFactory);
             } else {
-                // test6
                 mRetrofit.addConverterFactory(GsonConverterFactory.create());
             }
-            // test7
             if (DLApplication.mInstance.isDebug()) {
-                // test8
                 if (mLoggingInterceptor != null) {
-                    // test9
                     mOkHttpClient.addInterceptor(mLoggingInterceptor);
                 } else {
-                    // test10
                     HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
                     loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
                     mOkHttpClient.addInterceptor(loggingInterceptor);
