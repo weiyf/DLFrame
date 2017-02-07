@@ -29,6 +29,7 @@ import cn.weiyf.dlframe.animation.SlideInBottomAnimation;
 import cn.weiyf.dlframe.animation.SlideInLeftAnimation;
 import cn.weiyf.dlframe.animation.SlideInRightAnimation;
 import cn.weiyf.dlframe.databinding.ViewSimpleLoadMoreBinding;
+import cn.weiyf.dlframe.listener.OnItemClickListener;
 import cn.weiyf.dlframe.loadmore.LoadMoreView;
 
 import static android.databinding.DataBindingUtil.inflate;
@@ -44,8 +45,9 @@ public abstract class BaseDBAdapter<T> extends RecyclerView.Adapter<BindingViewH
 
 
     protected List<T> mDatas;
-    protected Presenter mPresenter;
+    //    protected Presenter mPresenter;
     protected Decorator mDecorator;
+    protected OnItemClickListener<T> mOnItemClickListener;
 
 
     //load more
@@ -146,7 +148,7 @@ public abstract class BaseDBAdapter<T> extends RecyclerView.Adapter<BindingViewH
             default:
                 final Object item = mDatas.get(position - getHeaderLayoutCount());
                 holder.getBinding().setVariable(BR.item, item);
-                holder.getBinding().setVariable(BR.presenter, getPresenter());
+                holder.getBinding().setVariable(BR.itemClick, getOnItemClickListener());
                 holder.getBinding().setVariable(BR.position, position);
                 holder.getBinding().executePendingBindings();
                 if (mDecorator != null) {
@@ -585,13 +587,21 @@ public abstract class BaseDBAdapter<T> extends RecyclerView.Adapter<BindingViewH
         mDecorator = decorator;
     }
 
-    public void setPresenter(Presenter presenter) {
-        mPresenter = presenter;
+    public OnItemClickListener<T> getOnItemClickListener() {
+        return mOnItemClickListener;
     }
 
-    protected Presenter getPresenter() {
-        return mPresenter;
+    public void setOnItemClickListener(OnItemClickListener<T> onItemClickListener) {
+        mOnItemClickListener = onItemClickListener;
     }
+
+    //    public void setPresenter(Presenter presenter) {
+//        mPresenter = presenter;
+//    }
+//
+//    protected Presenter getPresenter() {
+//        return mPresenter;
+//    }
 
     public void setOnLoadMoreListener(RequestLoadMoreListener requestLoadMoreListener) {
         this.mRequestLoadMoreListener = requestLoadMoreListener;

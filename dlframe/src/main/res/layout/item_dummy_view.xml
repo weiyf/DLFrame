@@ -8,8 +8,8 @@
             type="java.lang.Integer"/>
 
         <variable
-            name="presenter"
-            type="cn.weiyf.dlframe.base.BaseDBAdapter.Presenter"/>
+            name="itemClick"
+            type="cn.weiyf.dlframe.listener.OnItemClickListener"/>
 
         <variable
             name="item"
