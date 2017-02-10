@@ -12,6 +12,10 @@
             type="cn.weiyf.dlframe.listener.OnItemClickListener"/>
 
         <variable
+            name="itemLongClick"
+            type="cn.weiyf.dlframe.listener.OnItemLongClickListener"/>
+
+        <variable
             name="item"
             type="java.lang.Void"/>
     </data>

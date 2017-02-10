@@ -1,8 +1,8 @@
 package cn.weiyf.dlframe.listener;
 
 
-import cn.weiyf.dlframe.base.BaseDBAdapter;
+import android.view.View;
 
-public interface OnItemClickListener<T> extends BaseDBAdapter.Presenter {
-    void onItemClick(int position, T t);
+public interface OnItemClickListener<T> {
+    void onItemClick(int position, T t, View view);
 }

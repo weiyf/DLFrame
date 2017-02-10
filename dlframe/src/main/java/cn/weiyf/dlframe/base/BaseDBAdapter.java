@@ -30,6 +30,7 @@ import cn.weiyf.dlframe.animation.SlideInLeftAnimation;
 import cn.weiyf.dlframe.animation.SlideInRightAnimation;
 import cn.weiyf.dlframe.databinding.ViewSimpleLoadMoreBinding;
 import cn.weiyf.dlframe.listener.OnItemClickListener;
+import cn.weiyf.dlframe.listener.OnItemLongClickListener;
 import cn.weiyf.dlframe.loadmore.LoadMoreView;
 
 import static android.databinding.DataBindingUtil.inflate;
@@ -48,6 +49,8 @@ public abstract class BaseDBAdapter<T> extends RecyclerView.Adapter<BindingViewH
     //    protected Presenter mPresenter;
     protected Decorator mDecorator;
     protected OnItemClickListener<T> mOnItemClickListener;
+    protected OnItemLongClickListener<T> mOnItemLongClickListener;
+
 
 
     //load more
@@ -149,6 +152,7 @@ public abstract class BaseDBAdapter<T> extends RecyclerView.Adapter<BindingViewH
                 final Object item = mDatas.get(position - getHeaderLayoutCount());
                 holder.getBinding().setVariable(BR.item, item);
                 holder.getBinding().setVariable(BR.itemClick, getOnItemClickListener());
+                holder.getBinding().setVariable(BR.itemLongClick, getOnItemLongClickListener());
                 holder.getBinding().setVariable(BR.position, position);
                 holder.getBinding().executePendingBindings();
                 if (mDecorator != null) {
@@ -569,9 +573,6 @@ public abstract class BaseDBAdapter<T> extends RecyclerView.Adapter<BindingViewH
         }
     }
 
-    public interface Presenter {
-
-    }
 
     public interface Decorator {
         void decorator(BindingViewHolder holder, int position, int viewType);
@@ -591,8 +592,16 @@ public abstract class BaseDBAdapter<T> extends RecyclerView.Adapter<BindingViewH
         return mOnItemClickListener;
     }
 
+    public OnItemLongClickListener<T> getOnItemLongClickListener () {
+        return mOnItemLongClickListener;
+    }
+
     public void setOnItemClickListener(OnItemClickListener<T> onItemClickListener) {
         mOnItemClickListener = onItemClickListener;
+    }
+
+    public void setOnItemLongClickListener(OnItemLongClickListener<T> onItemLongClickListener) {
+        mOnItemLongClickListener = onItemLongClickListener;
     }
 
     //    public void setPresenter(Presenter presenter) {
