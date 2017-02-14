@@ -216,9 +216,6 @@ public abstract class BaseCompatActivity extends SupportActivity {
 
     protected abstract void initViews(@Nullable Bundle savedInstanceState);
 
-    protected boolean isBindEventBusHere() {
-        return false;
-    }
 
     protected boolean isSwipeBackEnable() {
         return false;

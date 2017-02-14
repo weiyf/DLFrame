@@ -166,10 +166,6 @@ public abstract class BaseCompatFragment extends SupportFragment {
 
     protected abstract void initViews(@Nullable Bundle savedInstanceState);
 
-    protected boolean isBindEventBusHere() {
-        return false;
-    }
-
     protected boolean isSwipeBackEnable() {
         return false;
     }
