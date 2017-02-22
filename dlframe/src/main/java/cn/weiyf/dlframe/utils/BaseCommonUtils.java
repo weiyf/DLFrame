@@ -87,6 +87,8 @@ public class BaseCommonUtils {
 
 
     public static void showToast(String msg) {
-        Toast.makeText(DLApplication.mInstance.getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+        if (DLApplication.mInstance != null) {
+            Toast.makeText(DLApplication.mInstance.getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+        }
     }
 }
