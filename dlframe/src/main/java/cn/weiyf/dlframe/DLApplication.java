@@ -56,10 +56,11 @@ public abstract class DLApplication extends Application {
     private void initRecovery(Class<? extends BaseCompatActivity> clazz) {
         Recovery.getInstance()
                 .debug(isDebug())
+                .recoverEnabled(true)
                 .recoverInBackground(false)
-                .recoverStack(isDebug())
+                .recoverStack(true)
                 .callback(new DLCrashCallback())
-                .silent(!isDebug(), Recovery.SilentMode.RESTART)
+                .silent(false, Recovery.SilentMode.RECOVER_ACTIVITY_STACK)
                 .mainPage(clazz)
                 .init(this);
     }
