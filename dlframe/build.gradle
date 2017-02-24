@@ -1,8 +1,5 @@
 apply plugin: 'com.android.library'
-
-apply plugin: 'com.github.dcendents.android-maven'
-
-group='com.github.weiyf'
+apply plugin: 'com.novoda.bintray-release'
 
 def supportVersion = "25.2.0"
 
@@ -26,6 +23,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {
@@ -46,9 +47,9 @@ dependencies {
     compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
 
     // Retrofit2
-    compile 'com.squareup.retrofit2:retrofit:2.2.0-SNAPSHOT'
-    compile 'com.squareup.retrofit2:converter-gson:2.2.0-SNAPSHOT'
-    compile 'com.squareup.retrofit2:adapter-rxjava2:2.2.0-SNAPSHOT'
+    compile 'com.squareup.retrofit2:retrofit:2.3.0-SNAPSHOT'
+    compile 'com.squareup.retrofit2:converter-gson:2.3.0-SNAPSHOT'
+    compile 'com.squareup.retrofit2:adapter-rxjava2:2.3.0-SNAPSHOT'
 
     // glide
     compile 'com.github.bumptech.glide:glide:3.7.0'
@@ -68,31 +69,25 @@ dependencies {
 }
 
 
-// 指定编码
-tasks.withType(JavaCompile) {
-    options.encoding = "UTF-8"
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+def bintrayUserVal = properties.getProperty('bintrayUser')
+def bintrayKeyVal = properties.getProperty('bintrayKey')
+
+
+tasks.withType(Javadoc) {
+    options.addStringOption('Xdoclint:none', '-quiet')
+    options.addStringOption('encoding', 'UTF-8')
 }
 
-// 打包源码
-task sourcesJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-    classifier = 'sources'
-}
-
-task javadoc(type: Javadoc) {
-    failOnError  false
-    source = android.sourceSets.main.java.sourceFiles
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-    classpath += configurations.compile
-}
-
-// 制作文档(Javadoc)
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
-
-artifacts {
-    archives sourcesJar
-    archives javadocJar
+publish {
+    userOrg = 'weiyf'
+    groupId = 'cn.weiyf.lib'
+    artifactId = 'DLFrame'
+    publishVersion = '1.0.02'
+    desc = 'DLFrame'
+    website = 'https://github.com/weiyf/DLFrame'
+    bintrayUser = bintrayUserVal
+    bintrayKey = bintrayKeyVal
+    dryRun = false
 }
