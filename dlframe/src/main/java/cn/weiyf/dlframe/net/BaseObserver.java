@@ -1,6 +1,7 @@
 package cn.weiyf.dlframe.net;
 
 
+import android.content.DialogInterface;
 import android.net.ParseException;
 import android.support.v4.app.FragmentManager;
 
@@ -16,7 +17,7 @@ import cn.weiyf.dlframe.DLApplication;
 import cn.weiyf.dlframe.loading.LoadingDialogFragment;
 import cn.weiyf.dlframe.utils.BaseCommonUtils;
 import io.reactivex.observers.DisposableObserver;
-import retrofit2.adapter.rxjava2.HttpException;
+import retrofit2.HttpException;
 
 public abstract class BaseObserver<T> extends DisposableObserver<T> {
 
@@ -46,7 +47,13 @@ public abstract class BaseObserver<T> extends DisposableObserver<T> {
         if (mLoadingDialogFragment == null) {
             mLoadingDialogFragment = new LoadingDialogFragment();
         }
-        mLoadingDialogFragment.show(mFragmentManager, "LoadingFragment");
+        mLoadingDialogFragment.show(mFragmentManager, "LoadingFragment", new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                dispose();
+                onError(new DLException("用户主动取消请求", -1));
+            }
+        });
     }
 
     private void dismissLoading() {
@@ -88,7 +95,6 @@ public abstract class BaseObserver<T> extends DisposableObserver<T> {
             e.printStackTrace();
             BaseCommonUtils.showToast("系统错误，请稍后再试！");
         }
-        _onError(e.getMessage());
     }
 
     @Override
@@ -100,6 +106,6 @@ public abstract class BaseObserver<T> extends DisposableObserver<T> {
 
     public abstract void _onNext(T t);
 
-    public void _onError(String errorMsg) {
+    public void _onError(DLException e) {
     }
 }

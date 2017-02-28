@@ -1,5 +1,6 @@
 package cn.weiyf.dlframe.base;
 
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -12,7 +13,6 @@ import android.view.ViewGroup;
 
 import cn.weiyf.dlframe.R;
 import cn.weiyf.dlframe.loading.LoadingDialogFragment;
-import cn.weiyf.dlframe.loading.onDismissListener;
 import cn.weiyf.dlframe.utils.BaseCommonUtils;
 import me.yokeyword.fragmentation.SupportActivity;
 import me.yokeyword.fragmentation.SwipeBackLayout;
@@ -161,8 +161,16 @@ public abstract class BaseCompatActivity extends SupportActivity {
         mDialogFragment.show(getSupportFragmentManager(), "loading");
     }
 
-    public void showLoading(onDismissListener onDismissListener) {
+    public void showLoading(DialogInterface.OnDismissListener onDismissListener) {
         mDialogFragment.show(getSupportFragmentManager(), "loading", onDismissListener);
+    }
+
+    public void showLoading(DialogInterface.OnCancelListener onCancelListener) {
+        mDialogFragment.show(getSupportFragmentManager(), "loading", onCancelListener);
+    }
+
+    public void showLoading(DialogInterface.OnDismissListener onDismissListener, DialogInterface.OnCancelListener onCancelListener) {
+        mDialogFragment.show(getSupportFragmentManager(), "loading", onDismissListener, onCancelListener);
     }
 
     public void dismissLoading() {

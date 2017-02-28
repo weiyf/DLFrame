@@ -84,7 +84,7 @@ publish {
     userOrg = 'weiyf'
     groupId = 'cn.weiyf.lib'
     artifactId = 'DLFrame'
-    publishVersion = '1.0.02'
+    publishVersion = '1.0.05'
     desc = 'DLFrame'
     website = 'https://github.com/weiyf/DLFrame'
     bintrayUser = bintrayUserVal

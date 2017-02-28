@@ -15,7 +15,9 @@ import cn.weiyf.dlframe.R;
 
 public class LoadingDialogFragment extends DialogFragment {
 
-    private onDismissListener mOnDismissListener;
+    DialogInterface.OnDismissListener mOnDismissListener;
+
+    private DialogInterface.OnCancelListener mOnCancelListener;
 
     @Override
     public void show(FragmentManager manager, String tag) {
@@ -25,8 +27,22 @@ public class LoadingDialogFragment extends DialogFragment {
         super.show(manager, tag);
     }
 
-    public void show(FragmentManager manager, String tag, onDismissListener dismissListener) {
+
+
+    public void show(FragmentManager manager, String tag, DialogInterface.OnDismissListener dismissListener) {
         this.mOnDismissListener = dismissListener;
+        show(manager, tag);
+    }
+
+    public void show(FragmentManager manager, String tag, DialogInterface.OnCancelListener cancelListener) {
+        this.mOnCancelListener = cancelListener;
+        show(manager, tag);
+    }
+
+
+    public void show(FragmentManager manager, String tag, DialogInterface.OnDismissListener dismissListener, DialogInterface.OnCancelListener cancelListener) {
+        this.mOnDismissListener = dismissListener;
+        this.mOnCancelListener = cancelListener;
         show(manager, tag);
     }
 
@@ -35,7 +51,15 @@ public class LoadingDialogFragment extends DialogFragment {
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
         if (mOnDismissListener != null) {
-            mOnDismissListener.onDismiss();
+            mOnDismissListener.onDismiss(dialog);
+        }
+    }
+
+    @Override
+    public void onCancel(DialogInterface dialog) {
+        super.onCancel(dialog);
+        if (mOnCancelListener != null) {
+            mOnCancelListener.onCancel(dialog);
         }
     }
 
@@ -43,6 +67,7 @@ public class LoadingDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Dialog dialog = new Dialog(getContext(), R.style.dl_dialog);
+        dialog.setCanceledOnTouchOutside(false);
         dialog.setContentView(R.layout.dialog_loading);
         return dialog;
     }

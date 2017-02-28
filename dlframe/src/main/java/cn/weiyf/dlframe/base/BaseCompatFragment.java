@@ -1,5 +1,6 @@
 package cn.weiyf.dlframe.base;
 
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,7 +14,6 @@ import android.widget.Toast;
 import com.orhanobut.logger.Logger;
 
 import cn.weiyf.dlframe.loading.LoadingDialogFragment;
-import cn.weiyf.dlframe.loading.onDismissListener;
 import me.yokeyword.fragmentation.SupportFragment;
 import me.yokeyword.fragmentation.SwipeBackLayout;
 
@@ -155,8 +155,16 @@ public abstract class BaseCompatFragment extends SupportFragment {
         mDialogFragment.show(getSupportFragmentManager(), "loading");
     }
 
-    public void showLoading(onDismissListener onDismissListener) {
+    public void showLoading(DialogInterface.OnDismissListener onDismissListener) {
         mDialogFragment.show(getSupportFragmentManager(), "loading", onDismissListener);
+    }
+
+    public void showLoading(DialogInterface.OnCancelListener onCancelListener) {
+        mDialogFragment.show(getSupportFragmentManager(), "loading", onCancelListener);
+    }
+
+    public void showLoading(DialogInterface.OnDismissListener onDismissListener, DialogInterface.OnCancelListener onCancelListener) {
+        mDialogFragment.show(getSupportFragmentManager(), "loading", onDismissListener, onCancelListener);
     }
 
     public void dismissLoading() {

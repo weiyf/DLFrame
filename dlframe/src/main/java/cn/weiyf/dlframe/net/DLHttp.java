@@ -1,6 +1,6 @@
 package cn.weiyf.dlframe.net;
 
-import android.text.TextUtils;
+import android.webkit.URLUtil;
 
 import java.io.File;
 import java.util.HashMap;
@@ -119,7 +119,7 @@ public class DLHttp {
 
 
         public <S> S create(Class<S> serviceClass) {
-            if (!TextUtils.isEmpty(mBaseUrl)) {
+            if (URLUtil.isValidUrl(mBaseUrl)) {
                 mRetrofit.baseUrl(mBaseUrl);
             } else {
                 throw new IllegalArgumentException("please setup the baseUrl");
