@@ -29,6 +29,8 @@ import cn.weiyf.dlframe.animation.SlideInBottomAnimation;
 import cn.weiyf.dlframe.animation.SlideInLeftAnimation;
 import cn.weiyf.dlframe.animation.SlideInRightAnimation;
 import cn.weiyf.dlframe.databinding.ViewSimpleLoadMoreBinding;
+import cn.weiyf.dlframe.listener.OnItemChildClickListener;
+import cn.weiyf.dlframe.listener.OnItemChildLongClickListener;
 import cn.weiyf.dlframe.listener.OnItemClickListener;
 import cn.weiyf.dlframe.listener.OnItemLongClickListener;
 import cn.weiyf.dlframe.loadmore.LoadMoreView;
@@ -47,10 +49,11 @@ public abstract class BaseDBAdapter<T> extends RecyclerView.Adapter<BindingViewH
 
     protected List<T> mDatas;
     //    protected Presenter mPresenter;
-    protected Decorator mDecorator;
-    protected OnItemClickListener<T> mOnItemClickListener;
-    protected OnItemLongClickListener<T> mOnItemLongClickListener;
-
+    private Decorator mDecorator;
+    private OnItemClickListener<T> mOnItemClickListener;
+    private OnItemChildClickListener<T> mOnItemChildClickListener;
+    private OnItemLongClickListener<T> mOnItemLongClickListener;
+    private OnItemChildLongClickListener<T> mOnItemChildLongClickListener;
 
 
     //load more
@@ -101,9 +104,6 @@ public abstract class BaseDBAdapter<T> extends RecyclerView.Adapter<BindingViewH
     public static final int EMPTY_VIEW = 0x00000555;
 
 
-    protected int removeIndex = -1;
-    protected boolean removeSuccess;
-
     private ViewGroup mParent;
 
     @Override
@@ -152,7 +152,9 @@ public abstract class BaseDBAdapter<T> extends RecyclerView.Adapter<BindingViewH
                 final Object item = mDatas.get(position - getHeaderLayoutCount());
                 holder.getBinding().setVariable(BR.item, item);
                 holder.getBinding().setVariable(BR.itemClick, getOnItemClickListener());
+                holder.getBinding().setVariable(BR.itemChildClick, getOnItemChildClickListener());
                 holder.getBinding().setVariable(BR.itemLongClick, getOnItemLongClickListener());
+                holder.getBinding().setVariable(BR.itemChildLongClick, getOnItemChildLongClickListener());
                 holder.getBinding().setVariable(BR.position, position);
                 holder.getBinding().executePendingBindings();
                 if (mDecorator != null) {
@@ -221,8 +223,15 @@ public abstract class BaseDBAdapter<T> extends RecyclerView.Adapter<BindingViewH
                 }
             }
         }
-
     }
+
+    private void openLoadMore(RequestLoadMoreListener requestLoadMoreListener) {
+        this.mRequestLoadMoreListener = requestLoadMoreListener;
+        mNextLoadEnable = true;
+        mLoadMoreEnable = true;
+        mLoading = false;
+    }
+
 
     protected int getDefItemViewType(int position) {
         return super.getItemViewType(position);
@@ -291,15 +300,15 @@ public abstract class BaseDBAdapter<T> extends RecyclerView.Adapter<BindingViewH
         return mFooterLayout;
     }
 
-    public void addHeaderView(View header) {
-        addHeaderView(header, -1);
+    public int addHeaderView(View header) {
+        return addHeaderView(header, -1);
     }
 
-    public void addHeaderView(View header, int index) {
-        addHeaderView(header, index, LinearLayout.VERTICAL);
+    public int addHeaderView(View header, int index) {
+        return addHeaderView(header, index, LinearLayout.VERTICAL);
     }
 
-    public void addHeaderView(View header, int index, int orientation) {
+    public int addHeaderView(View header, int index, int orientation) {
         if (mHeaderLayout == null) {
             mHeaderLayout = (LinearLayout) DataBindingUtil.inflate(LayoutInflater.from(header.getContext()), R.layout.view_header_or_footer, null, false).getRoot();
 //            mHeaderLayout = new LinearLayout(header.getContext());
@@ -311,7 +320,10 @@ public abstract class BaseDBAdapter<T> extends RecyclerView.Adapter<BindingViewH
                 mHeaderLayout.setLayoutParams(new RecyclerView.LayoutParams(WRAP_CONTENT, MATCH_PARENT));
             }
         }
-        index = index >= mHeaderLayout.getChildCount() ? -1 : index;
+        final int childCount = mHeaderLayout.getChildCount();
+        if (index < 0 || index > childCount) {
+            index = childCount;
+        }
         mHeaderLayout.addView(header, index);
         if (mHeaderLayout.getChildCount() == 1) {
             int position = getHeaderViewPosition();
@@ -319,34 +331,36 @@ public abstract class BaseDBAdapter<T> extends RecyclerView.Adapter<BindingViewH
                 notifyItemInserted(position);
             }
         }
+        return index;
     }
 
-    public void setHeaderView(View header) {
-        setHeaderView(header, 0, LinearLayout.VERTICAL);
+    public int setHeaderView(View header) {
+        return setHeaderView(header, 0, LinearLayout.VERTICAL);
     }
 
-    public void setHeaderView(View header, int index) {
-        setHeaderView(header, index, LinearLayout.VERTICAL);
+    public int setHeaderView(View header, int index) {
+        return setHeaderView(header, index, LinearLayout.VERTICAL);
     }
 
-    public void setHeaderView(View header, int index, int orientation) {
+    public int setHeaderView(View header, int index, int orientation) {
         if (mHeaderLayout == null || mHeaderLayout.getChildCount() <= index) {
-            addHeaderView(header, index, orientation);
+            return addHeaderView(header, index, orientation);
         } else {
             mHeaderLayout.removeViewAt(index);
             mHeaderLayout.addView(header, index);
+            return index;
         }
     }
 
-    public void addFooterView(View footer) {
-        addFooterView(footer, -1, LinearLayout.VERTICAL);
+    public int addFooterView(View footer) {
+        return addFooterView(footer, -1, LinearLayout.VERTICAL);
     }
 
-    public void addFooterView(View footer, int index) {
-        addFooterView(footer, index, LinearLayout.VERTICAL);
+    public int addFooterView(View footer, int index) {
+        return addFooterView(footer, index, LinearLayout.VERTICAL);
     }
 
-    public void addFooterView(View footer, int index, int orientation) {
+    public int addFooterView(View footer, int index, int orientation) {
         if (mFooterLayout == null) {
             mFooterLayout = (LinearLayout) DataBindingUtil.inflate(LayoutInflater.from(footer.getContext()), R.layout.view_header_or_footer, null, false).getRoot();
             if (orientation == LinearLayout.VERTICAL) {
@@ -357,13 +371,35 @@ public abstract class BaseDBAdapter<T> extends RecyclerView.Adapter<BindingViewH
                 mFooterLayout.setLayoutParams(new RecyclerView.LayoutParams(WRAP_CONTENT, MATCH_PARENT));
             }
         }
-        index = index >= mFooterLayout.getChildCount() ? -1 : index;
+        final int childCount = mFooterLayout.getChildCount();
+        if (index < 0 || index > childCount) {
+            index = childCount;
+        }
         mFooterLayout.addView(footer, index);
         if (mFooterLayout.getChildCount() == 1) {
             int position = getFooterViewPosition();
             if (position != -1) {
                 notifyItemInserted(position);
             }
+        }
+        return index;
+    }
+
+    public int setFooterView(View header) {
+        return setFooterView(header, 0, LinearLayout.VERTICAL);
+    }
+
+    public int setFooterView(View header, int index) {
+        return setFooterView(header, index, LinearLayout.VERTICAL);
+    }
+
+    public int setFooterView(View header, int index, int orientation) {
+        if (mFooterLayout == null || mFooterLayout.getChildCount() <= index) {
+            return addFooterView(header, index, orientation);
+        } else {
+            mFooterLayout.removeViewAt(index);
+            mFooterLayout.addView(header, index);
+            return index;
         }
     }
 
@@ -592,7 +628,11 @@ public abstract class BaseDBAdapter<T> extends RecyclerView.Adapter<BindingViewH
         return mOnItemClickListener;
     }
 
-    public OnItemLongClickListener<T> getOnItemLongClickListener () {
+    public OnItemChildClickListener<T> getOnItemChildClickListener() {
+        return mOnItemChildClickListener;
+    }
+
+    public OnItemLongClickListener<T> getOnItemLongClickListener() {
         return mOnItemLongClickListener;
     }
 
@@ -604,6 +644,18 @@ public abstract class BaseDBAdapter<T> extends RecyclerView.Adapter<BindingViewH
         mOnItemLongClickListener = onItemLongClickListener;
     }
 
+    public void setOnItemChildClickListener(OnItemChildClickListener<T> onItemChildClickListener) {
+        mOnItemChildClickListener = onItemChildClickListener;
+    }
+
+    public OnItemChildLongClickListener<T> getOnItemChildLongClickListener() {
+        return mOnItemChildLongClickListener;
+    }
+
+    public void setOnItemChildLongClickListener(OnItemChildLongClickListener<T> onItemChildLongClickListener) {
+        mOnItemChildLongClickListener = onItemChildLongClickListener;
+    }
+
     //    public void setPresenter(Presenter presenter) {
 //        mPresenter = presenter;
 //    }
@@ -613,10 +665,7 @@ public abstract class BaseDBAdapter<T> extends RecyclerView.Adapter<BindingViewH
 //    }
 
     public void setOnLoadMoreListener(RequestLoadMoreListener requestLoadMoreListener) {
-        this.mRequestLoadMoreListener = requestLoadMoreListener;
-        mNextLoadEnable = true;
-        mLoadMoreEnable = true;
-        mLoading = false;
+        openLoadMore(requestLoadMoreListener);
     }
 
     public void setNotDoAnimationCount(int count) {

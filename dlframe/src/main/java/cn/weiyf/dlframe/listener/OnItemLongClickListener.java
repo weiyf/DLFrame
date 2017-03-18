@@ -7,6 +7,6 @@ package cn.weiyf.dlframe.listener;
 
 public interface OnItemLongClickListener<T>  {
 
-    void onItemLongClick(int position, T t);
+    boolean onItemLongClick(int position, T t);
 
 }

@@ -91,12 +91,12 @@ public class DLHttp {
             return this;
         }
 
-        public Builder addLoggerInterceptor(Interceptor loggerInterceptor) {
+        public Builder setLoggerInterceptor(Interceptor loggerInterceptor) {
             mLoggingInterceptor = loggerInterceptor;
             return this;
         }
 
-        public Builder addCacheInterceptor(Interceptor cacheInterceptor) {
+        public Builder setCacheInterceptor(Interceptor cacheInterceptor) {
             mCacheInterceptor = cacheInterceptor;
             return this;
         }

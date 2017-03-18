@@ -7,8 +7,6 @@ import com.orhanobut.logger.Logger;
 import com.zxy.recovery.callback.RecoveryCallback;
 import com.zxy.recovery.core.Recovery;
 
-import java.net.URLEncoder;
-
 import cn.weiyf.dlframe.base.BaseAppManager;
 import cn.weiyf.dlframe.base.BaseCompatActivity;
 
@@ -80,8 +78,8 @@ public abstract class DLApplication extends Application {
 
         @Override
         public void cause(String cause) {
-            Logger.e(cause + "\ngoogle: http://www.google.com/search?q=" + URLEncoder.encode(cause)
-                    + "\nbaidu: https://www.baidu.com/s?wd=s" + URLEncoder.encode(cause));
+//            Logger.e(cause + "\ngoogle: http://www.google.com/search?q=" + URLEncoder.encode(cause)
+//                    + "\nbaidu: https://www.baidu.com/s?wd=s" + URLEncoder.encode(cause));
         }
 
         @Override

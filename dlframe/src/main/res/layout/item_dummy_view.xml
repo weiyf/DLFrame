@@ -12,8 +12,16 @@
             type="cn.weiyf.dlframe.listener.OnItemClickListener"/>
 
         <variable
+            name="itemChildClick"
+            type="cn.weiyf.dlframe.listener.OnItemChildClickListener"/>
+
+        <variable
             name="itemLongClick"
             type="cn.weiyf.dlframe.listener.OnItemLongClickListener"/>
+
+        <variable
+            name="itemChildLongClick"
+            type="cn.weiyf.dlframe.listener.OnItemChildLongClickListener"/>
 
         <variable
             name="item"
