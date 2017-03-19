@@ -28,6 +28,8 @@ import me.yokeyword.fragmentation.SupportActivity;
 import me.yokeyword.fragmentation.SwipeBackLayout;
 import me.yokeyword.fragmentation.anim.FragmentAnimator;
 
+import static cn.weiyf.dlframe.base.BaseCompatActivity.TransitionMode.NONE;
+
 /**
  * Created by weiyf on 2016/7/20.
  */
@@ -35,16 +37,14 @@ import me.yokeyword.fragmentation.anim.FragmentAnimator;
 public abstract class BaseCompatActivity extends SupportActivity implements LifecycleProvider<ActivityEvent> {
 
     protected LoadingDialogFragment mDialogFragment;
-    private boolean mIsOverridePendingTransition;
 
-    private TransitionMode mOverridePendingTransitionMode;
 
     private SwipeBackLayout mSwipeBackLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        if (mIsOverridePendingTransition) {
-            switch (mOverridePendingTransitionMode) {
+        if (getOverridePendingTransitionMode() != NONE) {
+            switch (getOverridePendingTransitionMode()) {
                 case LEFT:
                     overridePendingTransition(R.anim.left_in, R.anim.left_out);
                     break;
@@ -122,8 +122,8 @@ public abstract class BaseCompatActivity extends SupportActivity implements Life
     public void finish() {
         super.finish();
         BaseAppManager.getInstance().removeActivity(this);
-        if (mIsOverridePendingTransition) {
-            switch (mOverridePendingTransitionMode) {
+        if (getOverridePendingTransitionMode() != NONE) {
+            switch (getOverridePendingTransitionMode()) {
                 case LEFT:
                     overridePendingTransition(R.anim.left_in, R.anim.right_out);
                     break;
@@ -205,34 +205,19 @@ public abstract class BaseCompatActivity extends SupportActivity implements Life
         return snackbar;
     }
 
-    public boolean isOverridePendingTransition() {
-        return mIsOverridePendingTransition;
-    }
-
-    public void setOverridePendingTransition(boolean overridePendingTransition) {
-        mIsOverridePendingTransition = overridePendingTransition;
-    }
-
     public TransitionMode getOverridePendingTransitionMode() {
-        return mOverridePendingTransitionMode;
-    }
-
-    public void setOverridePendingTransitionMode(TransitionMode overridePendingTransitionMode) {
-        this.mOverridePendingTransitionMode = overridePendingTransitionMode;
+        return NONE;
     }
 
     protected abstract void initViews(@Nullable Bundle savedInstanceState);
-
 
     protected boolean isSwipeBackEnable() {
         return false;
     }
 
     protected enum TransitionMode {
-        LEFT, RIGHT, TOP, BOTTOM, SCALE, FADE
+        NONE, LEFT, RIGHT, TOP, BOTTOM, SCALE, FADE
     }
-
-
 
 
     private final BehaviorSubject<ActivityEvent> lifecycleSubject = BehaviorSubject.create();
