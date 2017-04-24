@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.weiyf.dlframe.R;
-
 import cn.weiyf.dlframe.base.BaseCompatActivity;
 import cn.weiyf.dlframe.base.BaseCompatFragment;
 
@@ -65,6 +64,7 @@ public class SwipeBackLayout extends FrameLayout {
     public static final int STATE_SETTLING = ViewDragHelper.STATE_SETTLING;
 
     private static final int DEFAULT_SCRIM_COLOR = 0x99000000;
+    private static final float DEFAULT_PARALLAX = 0.33f;
     private static final int FULL_ALPHA = 255;
     private static final float DEFAULT_SCROLL_THRESHOLD = 0.4f;
     private static final int OVERSCROLL_DISTANCE = 10;
@@ -88,6 +88,7 @@ public class SwipeBackLayout extends FrameLayout {
     private int mEdgeFlag;
     private boolean mEnable = true;
     private int mCurrentSwipeOrientation;
+    private float mParallaxOffset = DEFAULT_PARALLAX;
 
     /**
      * The set of listeners to be sent events through.
@@ -124,6 +125,10 @@ public class SwipeBackLayout extends FrameLayout {
             throw new IllegalArgumentException("Threshold value should be between 0 and 1.0");
         }
         mScrollFinishThreshold = threshold;
+    }
+
+    public void setParallaxOffset(float offset) {
+        this.mParallaxOffset = offset;
     }
 
     /**
@@ -266,6 +271,10 @@ public class SwipeBackLayout extends FrameLayout {
         if (mScrimOpacity >= 0) {
             if (mHelper.continueSettling(true)) {
                 ViewCompat.postInvalidateOnAnimation(this);
+            }
+            if (mPreFragment != null && mPreFragment.getView() != null && mHelper.getCapturedView() != null) {
+                int leftOffset = (int) ((mHelper.getCapturedView().getLeft() - getWidth()) * mParallaxOffset * mScrimOpacity);
+                mPreFragment.getView().setLeft(leftOffset > 0 ? 0 : leftOffset);
             }
         }
     }

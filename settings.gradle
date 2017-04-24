@@ -1,1 +1,1 @@
-include ':dlframe'
+include ':dlframe', ':sample'

@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.hwangjr.rxbus.RxBus;
 import com.trello.rxlifecycle2.LifecycleProvider;
 import com.trello.rxlifecycle2.LifecycleTransformer;
 import com.trello.rxlifecycle2.RxLifecycle;
@@ -43,6 +44,7 @@ public abstract class BaseCompatActivity extends SupportActivity implements Life
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        RxBus.get().register(this);
         if (getOverridePendingTransitionMode() != NONE) {
             switch (getOverridePendingTransitionMode()) {
                 case LEFT:
@@ -74,6 +76,7 @@ public abstract class BaseCompatActivity extends SupportActivity implements Life
             onActivityCreate();
         }
     }
+
 
     private void onActivityCreate() {
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -109,6 +112,10 @@ public abstract class BaseCompatActivity extends SupportActivity implements Life
         return mSwipeBackLayout;
     }
 
+    public void setSwipeBackEnable(boolean enable) {
+        mSwipeBackLayout.setEnableGesture(enable);
+    }
+
     /**
      * 限制SwipeBack的条件,默认栈内Fragment数 <= 1时 , 优先滑动退出Activity , 而不是Fragment
      *
@@ -125,16 +132,16 @@ public abstract class BaseCompatActivity extends SupportActivity implements Life
         if (getOverridePendingTransitionMode() != NONE) {
             switch (getOverridePendingTransitionMode()) {
                 case LEFT:
-                    overridePendingTransition(R.anim.left_in, R.anim.right_out);
+                    overridePendingTransition(R.anim.left_in, R.anim.left_out);
                     break;
                 case RIGHT:
-                    overridePendingTransition(R.anim.right_in, R.anim.left_out);
+                    overridePendingTransition(R.anim.right_in, R.anim.right_out);
                     break;
                 case TOP:
-                    overridePendingTransition(R.anim.top_in, R.anim.bottom_out);
+                    overridePendingTransition(R.anim.top_in, R.anim.top_out);
                     break;
                 case BOTTOM:
-                    overridePendingTransition(R.anim.bottom_in, R.anim.top_out);
+                    overridePendingTransition(R.anim.bottom_in, R.anim.bottom_out);
                     break;
                 case SCALE:
                     overridePendingTransition(R.anim.scale_in, R.anim.scale_out);
@@ -215,6 +222,7 @@ public abstract class BaseCompatActivity extends SupportActivity implements Life
         return false;
     }
 
+
     protected enum TransitionMode {
         NONE, LEFT, RIGHT, TOP, BOTTOM, SCALE, FADE
     }
@@ -275,6 +283,7 @@ public abstract class BaseCompatActivity extends SupportActivity implements Life
     @CallSuper
     protected void onDestroy() {
         lifecycleSubject.onNext(ActivityEvent.DESTROY);
+        RxBus.get().unregister(this);
         super.onDestroy();
     }
 }

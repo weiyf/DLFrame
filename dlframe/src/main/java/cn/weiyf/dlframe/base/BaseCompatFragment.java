@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.CheckResult;
+import android.support.annotation.FloatRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -83,6 +84,10 @@ public abstract class BaseCompatFragment extends SupportFragment implements Life
 
     public void setSwipeBackEnable(boolean enable) {
         mSwipeBackLayout.setEnableGesture(enable);
+    }
+
+    public void setParallaxOffset(@FloatRange(from = 0.0f, to = 1.0f) float offset) {
+        mSwipeBackLayout.setParallaxOffset(offset);
     }
 
     @Override

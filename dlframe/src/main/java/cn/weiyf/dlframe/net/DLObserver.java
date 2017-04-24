@@ -6,6 +6,7 @@ import android.net.ParseException;
 import android.support.v4.app.FragmentManager;
 
 import com.google.gson.JsonParseException;
+import com.hwangjr.rxbus.RxBus;
 import com.orhanobut.logger.Logger;
 
 import org.json.JSONException;
@@ -19,18 +20,18 @@ import cn.weiyf.dlframe.utils.BaseCommonUtils;
 import io.reactivex.observers.DisposableObserver;
 import retrofit2.HttpException;
 
-public abstract class BaseObserver<T> extends DisposableObserver<T> {
+public abstract class DLObserver<T> extends DisposableObserver<T> {
 
 
     private FragmentManager mFragmentManager;
     private LoadingDialogFragment mLoadingDialogFragment;
     private boolean mIsShowLoading = true;
 
-    public BaseObserver(FragmentManager fragmentManager) {
+    public DLObserver(FragmentManager fragmentManager) {
         mFragmentManager = fragmentManager;
     }
 
-    public BaseObserver(FragmentManager fragmentManager, boolean isShowLoading) {
+    public DLObserver(FragmentManager fragmentManager, boolean isShowLoading) {
         mIsShowLoading = isShowLoading;
         mFragmentManager = fragmentManager;
     }
@@ -51,7 +52,7 @@ public abstract class BaseObserver<T> extends DisposableObserver<T> {
             @Override
             public void onCancel(DialogInterface dialog) {
                 dispose();
-                onError(new DLException("用户主动取消请求", -1));
+                onError(new DLException(-1, "用户主动取消请求"));
             }
         });
     }
@@ -102,7 +103,11 @@ public abstract class BaseObserver<T> extends DisposableObserver<T> {
         _onNext(t);
     }
 
-    public abstract void handlerError(DLException exception);
+    public void handlerError(DLException exception) {
+        RxBus.get().post("handlerError", exception);
+        _onError(exception);
+    }
+
 
     public abstract void _onNext(T t);
 

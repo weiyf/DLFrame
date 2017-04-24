@@ -3,12 +3,17 @@ package cn.weiyf.dlframe.utils;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Environment;
 import android.widget.Toast;
 
+import java.math.BigInteger;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import cn.weiyf.dlframe.DLApplication;
 
@@ -52,29 +57,16 @@ public class BaseCommonUtils {
     }
 
 
-    public static String MD5(String inStr) {
-        MessageDigest md5 = null;
+    public static String md5(String str) {
         try {
-            md5 = MessageDigest.getInstance("MD5");
-        } catch (Exception e) {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] thedigest = md.digest(str.getBytes());
+            BigInteger bigInt = new BigInteger(1, thedigest);
+            return bigInt.toString(16);
+        } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
-            return "";
         }
-        char[] charArray = inStr.toCharArray();
-        byte[] byteArray = new byte[charArray.length];
-
-        for (int i = 0; i < charArray.length; i++)
-            byteArray[i] = (byte) charArray[i];
-        byte[] md5Bytes = md5.digest(byteArray);
-        StringBuilder hexValue = new StringBuilder();
-        for (byte md5Byte : md5Bytes) {
-            int val = ((int) md5Byte) & 0xff;
-            if (val < 16)
-                hexValue.append("0");
-            hexValue.append(Integer.toHexString(val));
-        }
-        return hexValue.toString();
-
+        return "";
     }
 
     public static void copyToClipboard(String info, Context context) {
@@ -82,6 +74,19 @@ public class BaseCommonUtils {
         ClipData clipData = ClipData.newPlainText("msg", info);
         manager.setPrimaryClip(clipData);
         showToast(String.format("[%s] 已经复制到剪切板啦✧", info));
+    }
+
+    public static String getSign() {
+        try {
+            PackageManager pm = DLApplication.mInstance.getPackageManager();
+            PackageInfo pi = pm.getPackageInfo(DLApplication.mInstance.getPackageName(), PackageManager.GET_SIGNATURES);
+            Signature[] signatures = pi.signatures;
+            Signature signature0 = signatures[0];
+            return signature0.toCharsString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 
     public static int dp2px(float dp) {

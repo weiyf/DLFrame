@@ -117,6 +117,11 @@ public class DLHttp {
             return this;
         }
 
+        public Builder addInterceptor(Interceptor interceptor) {
+            mOkHttpClient.addInterceptor(interceptor);
+            return this;
+        }
+
 
         public <S> S create(Class<S> serviceClass) {
             if (URLUtil.isValidUrl(mBaseUrl)) {
