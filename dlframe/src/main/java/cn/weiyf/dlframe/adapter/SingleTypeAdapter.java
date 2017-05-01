@@ -23,19 +23,17 @@ public class SingleTypeAdapter<T> extends BaseDBAdapter<T> {
 
     protected int mLayoutRes;
 
+    public SingleTypeAdapter(int layoutRes) {
+        mDatas = new ArrayList<>();
+        mLayoutRes = layoutRes;
+    }
+
     @Override
     protected BindingViewHolder createDBViewHolder(ViewGroup parent, int viewType) {
         return new BindingViewHolder<>(
                 DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
                         getLayoutRes(), parent, false));
     }
-
-
-    public SingleTypeAdapter(int layoutRes) {
-        mDatas = new ArrayList<>();
-        mLayoutRes = layoutRes;
-    }
-
 
     public void add(T object) {
         if (null != mDatas) {

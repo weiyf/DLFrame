@@ -18,12 +18,12 @@ public class LoadMoreView {
     private int mLoadMoreStatus = STATUS_DEFAULT;
     private boolean mLoadMoreEndGone = false;
 
-    public void setLoadMoreStatus(int loadMoreStatus) {
-        this.mLoadMoreStatus = loadMoreStatus;
-    }
-
     public int getLoadMoreStatus() {
         return mLoadMoreStatus;
+    }
+
+    public void setLoadMoreStatus(int loadMoreStatus) {
+        this.mLoadMoreStatus = loadMoreStatus;
     }
 
     public void convert(BindingViewHolder holder) {

@@ -3,7 +3,7 @@ package cn.weiyf.dlframe.animation;
 import android.animation.Animator;
 import android.view.View;
 
-public interface  BaseAnimation {
+public interface BaseAnimation {
 
     Animator[] getAnimators(View view);
 

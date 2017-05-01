@@ -1,4 +1,4 @@
-package cn.weiyf.dlframe.sample;
+package cn.weiyf.dlframe.sample.base;
 
 
 import cn.weiyf.dlframe.base.BaseCompatActivity;

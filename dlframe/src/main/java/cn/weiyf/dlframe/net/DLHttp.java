@@ -6,7 +6,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
-import cn.weiyf.dlframe.DLApplication;
+import cn.weiyf.dlframe.DLFrame;
 import cn.weiyf.dlframe.R;
 import okhttp3.Cache;
 import okhttp3.Interceptor;
@@ -105,7 +105,7 @@ public class DLHttp {
             if (mCacheInterceptor == null) {
                 mCacheInterceptor = new CacheInterceptor();
             }
-            File cacheFile = new File(DLApplication.mInstance.getCacheDir(), R.string.app_name + "-cache");
+            File cacheFile = new File(DLFrame.getInstance().getContext().getCacheDir(), R.string.app_name + "-cache");
             Cache cache = new Cache(cacheFile, 1024 * 1024 * size);
             mOkHttpClient.cache(cache).addInterceptor(mCacheInterceptor);
             return this;
@@ -134,7 +134,7 @@ public class DLHttp {
             } else {
                 mRetrofit.addConverterFactory(GsonConverterFactory.create());
             }
-            if (DLApplication.mInstance.isDebug()) {
+            if (DLFrame.getInstance().isDebug()) {
                 if (mLoggingInterceptor != null) {
                     mOkHttpClient.addInterceptor(mLoggingInterceptor);
                 } else {

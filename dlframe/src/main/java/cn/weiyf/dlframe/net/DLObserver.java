@@ -14,9 +14,9 @@ import org.json.JSONException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
-import cn.weiyf.dlframe.DLApplication;
+import cn.weiyf.dlframe.DLFrame;
 import cn.weiyf.dlframe.loading.LoadingDialogFragment;
-import cn.weiyf.dlframe.utils.BaseCommonUtils;
+import es.dmoral.toasty.Toasty;
 import io.reactivex.observers.DisposableObserver;
 import retrofit2.HttpException;
 
@@ -77,24 +77,24 @@ public abstract class DLObserver<T> extends DisposableObserver<T> {
         if (mIsShowLoading) {
             dismissLoading();
         }
-        if (DLApplication.mInstance.isDebug()) {
+        if (DLFrame.getInstance().isDebug()) {
             Logger.e(e.getMessage());
         }
         if (e instanceof HttpException) {
-            BaseCommonUtils.showToast("网络连接错误，请稍后再试！");
+            Toasty.error(DLFrame.getInstance().getContext() ,"网络连接错误，请稍后再试！").show();
         } else if (e instanceof DLException) {
             handlerError((DLException) e);
         } else if (e instanceof JsonParseException
                 || e instanceof JSONException
                 || e instanceof ParseException) {
-            BaseCommonUtils.showToast("数据解析错误，请联系管理员！");
+            Toasty.error(DLFrame.getInstance().getContext() ,"数据解析错误，请联系管理员！").show();
         } else if (e instanceof UnknownHostException) {
-            BaseCommonUtils.showToast("服务器错误，请稍后再试！");
+            Toasty.error(DLFrame.getInstance().getContext() ,"服务器错误，请稍后再试！").show();
         } else if (e instanceof SocketTimeoutException) {
-            BaseCommonUtils.showToast("连接服务器超时，请稍后再试！");
+            Toasty.error(DLFrame.getInstance().getContext() ,"连接服务器超时，请稍后再试！").show();
         } else {
             e.printStackTrace();
-            BaseCommonUtils.showToast("系统错误，请稍后再试！");
+            Toasty.error(DLFrame.getInstance().getContext() ,"系统错误，请稍后再试！").show();
         }
     }
 

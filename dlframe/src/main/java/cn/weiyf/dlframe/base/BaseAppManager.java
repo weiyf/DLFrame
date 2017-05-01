@@ -25,6 +25,11 @@ public class BaseAppManager {
         return instance;
     }
 
+    public static void exitApp() {
+        BaseAppManager.getInstance().clear();
+        android.os.Process.killProcess(android.os.Process.myPid());
+    }
+
     public int size() {
         return mActivities.size();
     }
@@ -60,4 +65,5 @@ public class BaseAppManager {
             i = mActivities.size() - 1;
         }
     }
+
 }

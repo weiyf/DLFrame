@@ -28,7 +28,6 @@ public class LoadingDialogFragment extends DialogFragment {
     }
 
 
-
     public void show(FragmentManager manager, String tag, DialogInterface.OnDismissListener dismissListener) {
         this.mOnDismissListener = dismissListener;
         show(manager, tag);

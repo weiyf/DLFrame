@@ -20,9 +20,10 @@ import com.trello.rxlifecycle2.RxLifecycle;
 import com.trello.rxlifecycle2.android.ActivityEvent;
 import com.trello.rxlifecycle2.android.RxLifecycleAndroid;
 
+import cn.weiyf.dlframe.DLFrame;
 import cn.weiyf.dlframe.R;
 import cn.weiyf.dlframe.loading.LoadingDialogFragment;
-import cn.weiyf.dlframe.utils.BaseCommonUtils;
+import es.dmoral.toasty.Toasty;
 import io.reactivex.Observable;
 import io.reactivex.subjects.BehaviorSubject;
 import me.yokeyword.fragmentation.SupportActivity;
@@ -37,9 +38,8 @@ import static cn.weiyf.dlframe.base.BaseCompatActivity.TransitionMode.NONE;
 
 public abstract class BaseCompatActivity extends SupportActivity implements LifecycleProvider<ActivityEvent> {
 
+    private final BehaviorSubject<ActivityEvent> lifecycleSubject = BehaviorSubject.create();
     protected LoadingDialogFragment mDialogFragment;
-
-
     private SwipeBackLayout mSwipeBackLayout;
 
     @Override
@@ -77,7 +77,6 @@ public abstract class BaseCompatActivity extends SupportActivity implements Life
         }
     }
 
-
     private void onActivityCreate() {
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         getWindow().getDecorView().setBackgroundDrawable(null);
@@ -110,10 +109,6 @@ public abstract class BaseCompatActivity extends SupportActivity implements Life
 
     public SwipeBackLayout getSwipeBackLayout() {
         return mSwipeBackLayout;
-    }
-
-    public void setSwipeBackEnable(boolean enable) {
-        mSwipeBackLayout.setEnableGesture(enable);
     }
 
     /**
@@ -183,9 +178,26 @@ public abstract class BaseCompatActivity extends SupportActivity implements Life
         mDialogFragment.dismiss();
     }
 
-    public void showToast(String str) {
-        BaseCommonUtils.showToast(str);
+    public void showNormal(String normal) {
+        Toasty.normal(DLFrame.getInstance().getContext(), normal).show();
     }
+
+    public void showInfo(String info) {
+        Toasty.info(DLFrame.getInstance().getContext(), info).show();
+    }
+
+    public void showSuccess(String success) {
+        Toasty.success(DLFrame.getInstance().getContext(), success).show();
+    }
+
+    public void showError(String error) {
+        Toasty.error(DLFrame.getInstance().getContext(), error).show();
+    }
+
+    public void showWarning(String warning) {
+        Toasty.warning(DLFrame.getInstance().getContext(), warning).show();
+    }
+
 
     public Snackbar showSnackBar(View contentView, String string) {
         Snackbar snackbar = Snackbar.make(contentView, string, Snackbar.LENGTH_SHORT);
@@ -222,13 +234,9 @@ public abstract class BaseCompatActivity extends SupportActivity implements Life
         return false;
     }
 
-
-    protected enum TransitionMode {
-        NONE, LEFT, RIGHT, TOP, BOTTOM, SCALE, FADE
+    public void setSwipeBackEnable(boolean enable) {
+        mSwipeBackLayout.setEnableGesture(enable);
     }
-
-
-    private final BehaviorSubject<ActivityEvent> lifecycleSubject = BehaviorSubject.create();
 
     @Override
     @NonNull
@@ -285,5 +293,9 @@ public abstract class BaseCompatActivity extends SupportActivity implements Life
         lifecycleSubject.onNext(ActivityEvent.DESTROY);
         RxBus.get().unregister(this);
         super.onDestroy();
+    }
+
+    protected enum TransitionMode {
+        NONE, LEFT, RIGHT, TOP, BOTTOM, SCALE, FADE
     }
 }

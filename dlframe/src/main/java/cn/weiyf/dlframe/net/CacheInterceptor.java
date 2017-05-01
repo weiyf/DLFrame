@@ -2,7 +2,7 @@ package cn.weiyf.dlframe.net;
 
 import java.io.IOException;
 
-import cn.weiyf.dlframe.utils.BaseCommonUtils;
+import cn.weiyf.dlframe.util.NetworkUtils;
 import okhttp3.CacheControl;
 import okhttp3.Interceptor;
 import okhttp3.Request;
@@ -18,13 +18,13 @@ public class CacheInterceptor implements Interceptor {
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
-        if (!BaseCommonUtils.isNetworkisAvailable()) {
+        if(NetworkUtils.isAvailable()) {
             request = request.newBuilder()
                     .cacheControl(CacheControl.FORCE_CACHE)
                     .build();
         }
         Response response = chain.proceed(request);
-        if (BaseCommonUtils.isNetworkisAvailable()) {
+        if (NetworkUtils.isAvailable()) {
             int maxAge = 0;
             // 有网络时 设置缓存超时时间0个小时
             response.newBuilder()

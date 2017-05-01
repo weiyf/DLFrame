@@ -1,15 +1,21 @@
 package cn.weiyf.dlframe.sample;
 
-import cn.weiyf.dlframe.DLApplication;
+import android.app.Application;
+
+import cn.weiyf.dlframe.DLFrame;
 
 /**
  * Created by Administrator on 2017/4/24.
  */
 
-public class AppContext extends DLApplication {
+public class AppContext extends Application {
 
     @Override
-    public boolean isDebug() {
-        return true;
+    public void onCreate() {
+        super.onCreate();
+        DLFrame.getInstance().init(this);
+        DLFrame.getInstance().debug(true);
     }
+
+
 }

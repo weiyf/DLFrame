@@ -47,64 +47,44 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 public abstract class BaseDBAdapter<T> extends RecyclerView.Adapter<BindingViewHolder> {
 
 
+    public static final int ALPHAIN = 0x00000001;
+    public static final int SCALEIN = 0x00000002;
+    public static final int SLIDEIN_BOTTOM = 0x00000003;
+    public static final int SLIDEIN_LEFT = 0x00000004;
+    public static final int SLIDEIN_RIGHT = 0x00000005;
+    public static final int HEADER_VIEW = 0x00000111;
+    public static final int LOADING_VIEW = 0x00000222;
+    public static final int FOOTER_VIEW = 0x00000333;
+    public static final int EMPTY_VIEW = 0x00000555;
     protected List<T> mDatas;
-    //    protected Presenter mPresenter;
-    private Decorator mDecorator;
-    private OnItemClickListener<T> mOnItemClickListener;
-    private OnItemChildClickListener<T> mOnItemChildClickListener;
-    private OnItemLongClickListener<T> mOnItemLongClickListener;
-    private OnItemChildLongClickListener<T> mOnItemChildLongClickListener;
-
-
     //load more
     protected boolean mNextLoadEnable = false;
     protected boolean mLoadMoreEnable = false;
     protected boolean mLoading = false;
     protected LoadMoreView mLoadMoreView = new LoadMoreView();
     protected RequestLoadMoreListener mRequestLoadMoreListener;
-
-    public static final int ALPHAIN = 0x00000001;
-
-    public static final int SCALEIN = 0x00000002;
-
-    public static final int SLIDEIN_BOTTOM = 0x00000003;
-
-    public static final int SLIDEIN_LEFT = 0x00000004;
-
-    public static final int SLIDEIN_RIGHT = 0x00000005;
-
-    @IntDef({ALPHAIN, SCALEIN, SLIDEIN_BOTTOM, SLIDEIN_LEFT, SLIDEIN_RIGHT})
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface AnimationType {
-
-    }
-
     protected boolean mFirstOnlyEnable = true;
     protected boolean mOpenAnimationEnable = false;
     protected Interpolator mInterpolator = new LinearInterpolator();
     protected int mDuration = 300;
     protected int mLastPosition = -1;
-
+    //    protected Presenter mPresenter;
+    private Decorator mDecorator;
+    private OnItemClickListener<T> mOnItemClickListener;
+    private OnItemChildClickListener<T> mOnItemChildClickListener;
+    private OnItemLongClickListener<T> mOnItemLongClickListener;
+    private OnItemChildLongClickListener<T> mOnItemChildLongClickListener;
     private BaseAnimation mCustomAnimation;
     private BaseAnimation mSelectAnimation = new AlphaInAnimation();
-
     private LinearLayout mHeaderLayout;
     private LinearLayout mFooterLayout;
     private FrameLayout mEmptyLayout;
-
     private boolean mIsUseEmpty = true;
     private int mAutoLoadMoreSize = 1;
-
     private boolean mHeadAndEmptyEnable;
     private boolean mFootAndEmptyEnable;
-
-    public static final int HEADER_VIEW = 0x00000111;
-    public static final int LOADING_VIEW = 0x00000222;
-    public static final int FOOTER_VIEW = 0x00000333;
-    public static final int EMPTY_VIEW = 0x00000555;
-
-
     private ViewGroup mParent;
+    private SpanSizeLookup mSpanSizeLookup;
 
     @Override
     public BindingViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -480,6 +460,23 @@ public abstract class BaseDBAdapter<T> extends RecyclerView.Adapter<BindingViewH
         setEmptyView(view);
     }
 
+    public void setHeaderAndEmpty(boolean isHeadAndEmpty) {
+        setHeaderFooterEmpty(isHeadAndEmpty, false);
+    }
+
+    public void setHeaderFooterEmpty(boolean isHeadAndEmpty, boolean isFootAndEmpty) {
+        mHeadAndEmptyEnable = isHeadAndEmpty;
+        mFootAndEmptyEnable = isFootAndEmpty;
+    }
+
+    public void isUseEmpty(boolean isUseEmpty) {
+        mIsUseEmpty = isUseEmpty;
+    }
+
+    public View getEmptyView() {
+        return mEmptyLayout;
+    }
+
     public void setEmptyView(View emptyView) {
         boolean insert = false;
         if (mEmptyLayout == null) {
@@ -505,23 +502,6 @@ public abstract class BaseDBAdapter<T> extends RecyclerView.Adapter<BindingViewH
                 notifyItemInserted(position);
             }
         }
-    }
-
-    public void setHeaderAndEmpty(boolean isHeadAndEmpty) {
-        setHeaderFooterEmpty(isHeadAndEmpty, false);
-    }
-
-    public void setHeaderFooterEmpty(boolean isHeadAndEmpty, boolean isFootAndEmpty) {
-        mHeadAndEmptyEnable = isHeadAndEmpty;
-        mFootAndEmptyEnable = isFootAndEmpty;
-    }
-
-    public void isUseEmpty(boolean isUseEmpty) {
-        mIsUseEmpty = isUseEmpty;
-    }
-
-    public View getEmptyView() {
-        return mEmptyLayout;
     }
 
     public void setAutoLoadMoreSize(int autoLoadMoreSize) {
@@ -591,33 +571,15 @@ public abstract class BaseDBAdapter<T> extends RecyclerView.Adapter<BindingViewH
         this.mFirstOnlyEnable = firstOnly;
     }
 
-    private SpanSizeLookup mSpanSizeLookup;
-
-    public interface SpanSizeLookup {
-        int getSpanSize(GridLayoutManager gridLayoutManager, int position);
-    }
-
     public void setSpanSizeLookup(SpanSizeLookup spanSizeLookup) {
         this.mSpanSizeLookup = spanSizeLookup;
     }
-
 
     protected void setFullSpan(RecyclerView.ViewHolder holder) {
         if (holder.itemView.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
             StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) holder.itemView.getLayoutParams();
             params.setFullSpan(true);
         }
-    }
-
-
-    public interface Decorator {
-        void decorator(BindingViewHolder holder, int position, int viewType);
-    }
-
-    public interface RequestLoadMoreListener {
-
-        void onLoadMoreRequested();
-
     }
 
     public void setDecorator(Decorator decorator) {
@@ -628,24 +590,24 @@ public abstract class BaseDBAdapter<T> extends RecyclerView.Adapter<BindingViewH
         return mOnItemClickListener;
     }
 
+    public void setOnItemClickListener(OnItemClickListener<T> onItemClickListener) {
+        mOnItemClickListener = onItemClickListener;
+    }
+
     public OnItemChildClickListener<T> getOnItemChildClickListener() {
         return mOnItemChildClickListener;
+    }
+
+    public void setOnItemChildClickListener(OnItemChildClickListener<T> onItemChildClickListener) {
+        mOnItemChildClickListener = onItemChildClickListener;
     }
 
     public OnItemLongClickListener<T> getOnItemLongClickListener() {
         return mOnItemLongClickListener;
     }
 
-    public void setOnItemClickListener(OnItemClickListener<T> onItemClickListener) {
-        mOnItemClickListener = onItemClickListener;
-    }
-
     public void setOnItemLongClickListener(OnItemLongClickListener<T> onItemLongClickListener) {
         mOnItemLongClickListener = onItemLongClickListener;
-    }
-
-    public void setOnItemChildClickListener(OnItemChildClickListener<T> onItemChildClickListener) {
-        mOnItemChildClickListener = onItemChildClickListener;
     }
 
     public OnItemChildLongClickListener<T> getOnItemChildLongClickListener() {
@@ -655,14 +617,6 @@ public abstract class BaseDBAdapter<T> extends RecyclerView.Adapter<BindingViewH
     public void setOnItemChildLongClickListener(OnItemChildLongClickListener<T> onItemChildLongClickListener) {
         mOnItemChildLongClickListener = onItemChildLongClickListener;
     }
-
-    //    public void setPresenter(Presenter presenter) {
-//        mPresenter = presenter;
-//    }
-//
-//    protected Presenter getPresenter() {
-//        return mPresenter;
-//    }
 
     public void setOnLoadMoreListener(RequestLoadMoreListener requestLoadMoreListener) {
         openLoadMore(requestLoadMoreListener);
@@ -688,6 +642,14 @@ public abstract class BaseDBAdapter<T> extends RecyclerView.Adapter<BindingViewH
         }
         return 1;
     }
+
+    //    public void setPresenter(Presenter presenter) {
+//        mPresenter = presenter;
+//    }
+//
+//    protected Presenter getPresenter() {
+//        return mPresenter;
+//    }
 
     public boolean isLoading() {
         return mLoading;
@@ -782,13 +744,11 @@ public abstract class BaseDBAdapter<T> extends RecyclerView.Adapter<BindingViewH
         return 1;
     }
 
-
     public void remove(int position) {
         mDatas.remove(position);
         notifyItemRemoved(position + getHeaderLayoutCount());
         compatibilityDataSizeChanged(0);
     }
-
 
     public int remove(T object) {
         int position = mDatas.indexOf(object);
@@ -815,7 +775,6 @@ public abstract class BaseDBAdapter<T> extends RecyclerView.Adapter<BindingViewH
         compatibilityDataSizeChanged(mDatas.size());
     }
 
-
     public T getItem(int position) {
         return mDatas.get(position);
     }
@@ -834,4 +793,25 @@ public abstract class BaseDBAdapter<T> extends RecyclerView.Adapter<BindingViewH
     }
 
     protected abstract BindingViewHolder createDBViewHolder(ViewGroup parent, int viewType);
+
+
+    @IntDef({ALPHAIN, SCALEIN, SLIDEIN_BOTTOM, SLIDEIN_LEFT, SLIDEIN_RIGHT})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface AnimationType {
+
+    }
+
+    public interface SpanSizeLookup {
+        int getSpanSize(GridLayoutManager gridLayoutManager, int position);
+    }
+
+    public interface Decorator {
+        void decorator(BindingViewHolder holder, int position, int viewType);
+    }
+
+    public interface RequestLoadMoreListener {
+
+        void onLoadMoreRequested();
+
+    }
 }

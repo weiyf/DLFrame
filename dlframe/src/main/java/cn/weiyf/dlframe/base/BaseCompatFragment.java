@@ -11,8 +11,8 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
+import com.hwangjr.rxbus.RxBus;
 import com.orhanobut.logger.Logger;
 import com.trello.rxlifecycle2.LifecycleProvider;
 import com.trello.rxlifecycle2.LifecycleTransformer;
@@ -20,7 +20,9 @@ import com.trello.rxlifecycle2.RxLifecycle;
 import com.trello.rxlifecycle2.android.FragmentEvent;
 import com.trello.rxlifecycle2.android.RxLifecycleAndroid;
 
+import cn.weiyf.dlframe.DLFrame;
 import cn.weiyf.dlframe.loading.LoadingDialogFragment;
+import es.dmoral.toasty.Toasty;
 import io.reactivex.Observable;
 import io.reactivex.subjects.BehaviorSubject;
 import me.yokeyword.fragmentation.SupportFragment;
@@ -31,15 +33,14 @@ import me.yokeyword.fragmentation.SwipeBackLayout;
  */
 public abstract class BaseCompatFragment extends SupportFragment implements LifecycleProvider<FragmentEvent> {
 
-    protected LoadingDialogFragment mDialogFragment;
-
-    private SwipeBackLayout mSwipeBackLayout;
-
+    private final BehaviorSubject<FragmentEvent> lifecycleSubject = BehaviorSubject.create();
     public BaseCompatActivity mActivity;
-
+    protected LoadingDialogFragment mDialogFragment;
+    private SwipeBackLayout mSwipeBackLayout;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+        RxBus.get().register(this);
         super.onCreate(savedInstanceState);
         lifecycleSubject.onNext(FragmentEvent.CREATE);
         mDialogFragment = new LoadingDialogFragment();
@@ -82,10 +83,6 @@ public abstract class BaseCompatFragment extends SupportFragment implements Life
         return mSwipeBackLayout;
     }
 
-    public void setSwipeBackEnable(boolean enable) {
-        mSwipeBackLayout.setEnableGesture(enable);
-    }
-
     public void setParallaxOffset(@FloatRange(from = 0.0f, to = 1.0f) float offset) {
         mSwipeBackLayout.setParallaxOffset(offset);
     }
@@ -111,9 +108,26 @@ public abstract class BaseCompatFragment extends SupportFragment implements Life
         return getActivity().getSupportFragmentManager();
     }
 
-    public void showToast(String strings) {
-        Toast.makeText(_mActivity.getApplicationContext(), strings, Toast.LENGTH_SHORT).show();
+    public void showNormal(String normal) {
+        Toasty.normal(DLFrame.getInstance().getContext(), normal).show();
     }
+
+    public void showInfo(String info) {
+        Toasty.info(DLFrame.getInstance().getContext(), info).show();
+    }
+
+    public void showSuccess(String success) {
+        Toasty.success(DLFrame.getInstance().getContext(), success).show();
+    }
+
+    public void showError(String error) {
+        Toasty.error(DLFrame.getInstance().getContext(), error).show();
+    }
+
+    public void showWarning(String warning) {
+        Toasty.warning(DLFrame.getInstance().getContext(), warning).show();
+    }
+
 
     public Snackbar showSnackBar(String string) {
         if (getView() != null) {
@@ -187,8 +201,9 @@ public abstract class BaseCompatFragment extends SupportFragment implements Life
         return false;
     }
 
-
-    private final BehaviorSubject<FragmentEvent> lifecycleSubject = BehaviorSubject.create();
+    public void setSwipeBackEnable(boolean enable) {
+        mSwipeBackLayout.setEnableGesture(enable);
+    }
 
     @Override
     @NonNull
@@ -247,6 +262,7 @@ public abstract class BaseCompatFragment extends SupportFragment implements Life
     @Override
     public void onDestroy() {
         lifecycleSubject.onNext(FragmentEvent.DESTROY);
+        RxBus.get().unregister(this);
         super.onDestroy();
     }
 

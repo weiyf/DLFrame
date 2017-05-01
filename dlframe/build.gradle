@@ -37,19 +37,17 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'me.yokeyword:fragmentation:0.10.3'
+    compile 'me.yokeyword:fragmentation:0.10.4'
 
     // support
     compile "com.android.support:appcompat-v7:$supportVersion"
     compile "com.android.support:design:$supportVersion"
 
-    debugCompile 'com.zxy.android:recovery:0.1.4'
-    releaseCompile 'com.zxy.android:recovery-no-op:0.1.4'
     compile 'com.orhanobut:logger:1.15'
     compile 'com.google.code.gson:gson:2.8.0'
 
     // RxJava2
-    compile 'io.reactivex.rxjava2:rxjava:2.0.8'
+    compile 'io.reactivex.rxjava2:rxjava:2.0.9'
     compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
 
     // Retrofit2
@@ -73,6 +71,7 @@ dependencies {
     compile 'com.squareup.okhttp3:okhttp:3.7.0'
 
     compile 'com.hwangjr.rxbus:rxbus:2.0.0-beta'
+    compile 'com.github.GrenderG:Toasty:1.1.5'
 
 }
 
@@ -92,7 +91,7 @@ publish {
     userOrg = 'weiyf'
     groupId = 'cn.weiyf.lib'
     artifactId = 'DLFrame'
-    publishVersion = '1.0.21'
+    publishVersion = '1.0.30'
     desc = 'DLFrame'
     website = 'https://github.com/weiyf/DLFrame'
     bintrayUser = bintrayUserVal
