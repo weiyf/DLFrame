@@ -147,6 +147,11 @@ public class MultiTypeAdapter extends BaseDBAdapter<Object> {
 
 
     @Override
+    protected int getDefItemViewType(int position) {
+        return mDataViewType.get(position);
+    }
+
+    @Override
     public void remove(int position) {
         mDataViewType.remove(position);
         super.remove(position);
@@ -158,10 +163,6 @@ public class MultiTypeAdapter extends BaseDBAdapter<Object> {
         super.clear();
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        return mDataViewType.get(position);
-    }
 
     @LayoutRes
     protected int getLayoutRes(int viewType) {

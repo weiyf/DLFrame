@@ -35,10 +35,6 @@ import cn.weiyf.dlframe.listener.OnItemClickListener;
 import cn.weiyf.dlframe.listener.OnItemLongClickListener;
 import cn.weiyf.dlframe.loadmore.LoadMoreView;
 
-import static android.databinding.DataBindingUtil.inflate;
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-
 
 /**
  * Created by Administrator on 2017/1/10.
@@ -93,14 +89,11 @@ public abstract class BaseDBAdapter<T> extends RecyclerView.Adapter<BindingViewH
         }
         switch (viewType) {
             case LOADING_VIEW:
-                final ViewSimpleLoadMoreBinding loadMoreBinding = inflate(LayoutInflater.from(parent.getContext()),
+                final ViewSimpleLoadMoreBinding loadMoreBinding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
                         R.layout.view_simple_load_more, parent, false);
-                loadMoreBinding.loadMoreFail.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mLoadMoreView.setLoadMoreStatus(1);
-                        notifyItemChanged(getHeaderLayoutCount() + mDatas.size() + getFooterLayoutCount());
-                    }
+                loadMoreBinding.loadMoreFail.setOnClickListener(v -> {
+                    mLoadMoreView.setLoadMoreStatus(1);
+                    notifyItemChanged(getHeaderLayoutCount() + mDatas.size() + getFooterLayoutCount());
                 });
                 return new BindingViewHolder<>(loadMoreBinding);
             case HEADER_VIEW:
@@ -129,7 +122,7 @@ public abstract class BaseDBAdapter<T> extends RecyclerView.Adapter<BindingViewH
             case EMPTY_VIEW:
                 break;
             default:
-                final Object item = mDatas.get(position - getHeaderLayoutCount());
+                final Object item = mDatas.get(holder.getLayoutPosition() - getHeaderLayoutCount());
                 holder.getBinding().setVariable(BR.item, item);
                 holder.getBinding().setVariable(BR.itemClick, getOnItemClickListener());
                 holder.getBinding().setVariable(BR.itemChildClick, getOnItemChildClickListener());
@@ -213,9 +206,7 @@ public abstract class BaseDBAdapter<T> extends RecyclerView.Adapter<BindingViewH
     }
 
 
-    protected int getDefItemViewType(int position) {
-        return super.getItemViewType(position);
-    }
+    protected abstract int getDefItemViewType(int position);
 
     private void autoLoadMore(int position) {
         if (getLoadMoreViewCount() == 0) {
@@ -230,12 +221,7 @@ public abstract class BaseDBAdapter<T> extends RecyclerView.Adapter<BindingViewH
         mLoadMoreView.setLoadMoreStatus(LoadMoreView.STATUS_LOADING);
         if (!mLoading) {
             mLoading = true;
-            mParent.post(new Runnable() {
-                @Override
-                public void run() {
-                    mRequestLoadMoreListener.onLoadMoreRequested();
-                }
-            });
+            mParent.post(() -> mRequestLoadMoreListener.onLoadMoreRequested());
 
 
         }
@@ -290,14 +276,14 @@ public abstract class BaseDBAdapter<T> extends RecyclerView.Adapter<BindingViewH
 
     public int addHeaderView(View header, int index, int orientation) {
         if (mHeaderLayout == null) {
-            mHeaderLayout = (LinearLayout) DataBindingUtil.inflate(LayoutInflater.from(header.getContext()), R.layout.view_header_or_footer, null, false).getRoot();
+            mHeaderLayout = (LinearLayout) DataBindingUtil.inflate(LayoutInflater.from(header.getContext()), R.layout.view_header_footer_container, null, false).getRoot();
 //            mHeaderLayout = new LinearLayout(header.getContext());
             if (orientation == LinearLayout.VERTICAL) {
                 mHeaderLayout.setOrientation(LinearLayout.VERTICAL);
-                mHeaderLayout.setLayoutParams(new RecyclerView.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
+                mHeaderLayout.setLayoutParams(new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT));
             } else {
                 mHeaderLayout.setOrientation(LinearLayout.HORIZONTAL);
-                mHeaderLayout.setLayoutParams(new RecyclerView.LayoutParams(WRAP_CONTENT, MATCH_PARENT));
+                mHeaderLayout.setLayoutParams(new RecyclerView.LayoutParams(RecyclerView.LayoutParams.WRAP_CONTENT, RecyclerView.LayoutParams.MATCH_PARENT));
             }
         }
         final int childCount = mHeaderLayout.getChildCount();
@@ -342,13 +328,13 @@ public abstract class BaseDBAdapter<T> extends RecyclerView.Adapter<BindingViewH
 
     public int addFooterView(View footer, int index, int orientation) {
         if (mFooterLayout == null) {
-            mFooterLayout = (LinearLayout) DataBindingUtil.inflate(LayoutInflater.from(footer.getContext()), R.layout.view_header_or_footer, null, false).getRoot();
+            mFooterLayout = (LinearLayout) DataBindingUtil.inflate(LayoutInflater.from(footer.getContext()), R.layout.view_header_footer_container, null, false).getRoot();
             if (orientation == LinearLayout.VERTICAL) {
                 mFooterLayout.setOrientation(LinearLayout.VERTICAL);
-                mFooterLayout.setLayoutParams(new RecyclerView.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
+                mFooterLayout.setLayoutParams(new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT));
             } else {
                 mFooterLayout.setOrientation(LinearLayout.HORIZONTAL);
-                mFooterLayout.setLayoutParams(new RecyclerView.LayoutParams(WRAP_CONTENT, MATCH_PARENT));
+                mFooterLayout.setLayoutParams(new RecyclerView.LayoutParams(RecyclerView.LayoutParams.WRAP_CONTENT, RecyclerView.LayoutParams.MATCH_PARENT));
             }
         }
         final int childCount = mFooterLayout.getChildCount();
@@ -455,10 +441,10 @@ public abstract class BaseDBAdapter<T> extends RecyclerView.Adapter<BindingViewH
         return -1;
     }
 
-    public void setEmptyView(int layoutResId, ViewGroup viewGroup) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(layoutResId, viewGroup, false);
-        setEmptyView(view);
-    }
+//    public void setEmptyView(int layoutResId, ViewGroup viewGroup) {
+//        View view = LayoutInflater.from(viewGroup.getContext()).inflate(layoutResId, viewGroup, false);
+//        setEmptyView(view);
+//    }
 
     public void setHeaderAndEmpty(boolean isHeadAndEmpty) {
         setHeaderFooterEmpty(isHeadAndEmpty, false);
@@ -480,7 +466,7 @@ public abstract class BaseDBAdapter<T> extends RecyclerView.Adapter<BindingViewH
     public void setEmptyView(View emptyView) {
         boolean insert = false;
         if (mEmptyLayout == null) {
-            mEmptyLayout = new FrameLayout(emptyView.getContext());
+            mEmptyLayout = (FrameLayout) DataBindingUtil.inflate(LayoutInflater.from(emptyView.getContext()), R.layout.view_empty_container, null, false).getRoot();
             final RecyclerView.LayoutParams layoutParams = new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.MATCH_PARENT);
             final ViewGroup.LayoutParams lp = emptyView.getLayoutParams();
             if (lp != null) {

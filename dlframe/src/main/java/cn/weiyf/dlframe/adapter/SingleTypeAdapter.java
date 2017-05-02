@@ -29,6 +29,11 @@ public class SingleTypeAdapter<T> extends BaseDBAdapter<T> {
     }
 
     @Override
+    protected int getDefItemViewType(int position) {
+        return 0;
+    }
+
+    @Override
     protected BindingViewHolder createDBViewHolder(ViewGroup parent, int viewType) {
         return new BindingViewHolder<>(
                 DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),

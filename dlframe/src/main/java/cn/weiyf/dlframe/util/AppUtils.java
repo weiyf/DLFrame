@@ -292,7 +292,7 @@ public class AppUtils {
 
     public static String getDeviceId() {
         TelephonyManager tm = (TelephonyManager) DLFrame.getInstance().getSystemService(Context.TELEPHONY_SERVICE);
-        return tm.getDeviceId();
+        return tm.getDeviceId() == null ? "" : tm.getDeviceId();
     }
 
     public static String getMac() {
