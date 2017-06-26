@@ -12,7 +12,6 @@ import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.hwangjr.rxbus.RxBus;
 import com.orhanobut.logger.Logger;
 import com.trello.rxlifecycle2.LifecycleProvider;
 import com.trello.rxlifecycle2.LifecycleTransformer;
@@ -40,7 +39,6 @@ public abstract class BaseCompatFragment extends SupportFragment implements Life
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        RxBus.get().register(this);
         super.onCreate(savedInstanceState);
         lifecycleSubject.onNext(FragmentEvent.CREATE);
         mDialogFragment = new LoadingDialogFragment();
@@ -262,7 +260,6 @@ public abstract class BaseCompatFragment extends SupportFragment implements Life
     @Override
     public void onDestroy() {
         lifecycleSubject.onNext(FragmentEvent.DESTROY);
-        RxBus.get().unregister(this);
         super.onDestroy();
     }
 

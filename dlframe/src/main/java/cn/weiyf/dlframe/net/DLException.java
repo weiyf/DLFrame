@@ -7,15 +7,15 @@ package cn.weiyf.dlframe.net;
 public class DLException extends RuntimeException {
 
 
-    private int errorCode;
+    private String errorCode;
 
-    public DLException(int errorCode, String message) {
+    public DLException(String errorCode, String message) {
         super(message);
         this.errorCode = errorCode;
     }
 
 
-    public int getErrorCode() {
+    public String getErrorCode() {
         return errorCode;
     }
 }

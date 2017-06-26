@@ -9,11 +9,11 @@ import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.hwangjr.rxbus.RxBus;
 import com.trello.rxlifecycle2.LifecycleProvider;
 import com.trello.rxlifecycle2.LifecycleTransformer;
 import com.trello.rxlifecycle2.RxLifecycle;
@@ -44,7 +44,6 @@ public abstract class BaseCompatActivity extends SupportActivity implements Life
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        RxBus.get().register(this);
         if (getOverridePendingTransitionMode() != NONE) {
             switch (getOverridePendingTransitionMode()) {
                 case LEFT:
@@ -291,7 +290,6 @@ public abstract class BaseCompatActivity extends SupportActivity implements Life
     @CallSuper
     protected void onDestroy() {
         lifecycleSubject.onNext(ActivityEvent.DESTROY);
-        RxBus.get().unregister(this);
         super.onDestroy();
     }
 

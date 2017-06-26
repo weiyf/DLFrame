@@ -52,7 +52,7 @@ public abstract class DLObserver<T> extends DisposableObserver<T> {
             @Override
             public void onCancel(DialogInterface dialog) {
                 dispose();
-                onError(new DLException(-1, "用户主动取消请求"));
+                onError(new DLException("-1", "用户主动取消请求"));
             }
         });
     }
