@@ -15,7 +15,6 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.CallAdapter;
 import retrofit2.Converter;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by Administrator on 2016/12/28.
@@ -44,8 +43,6 @@ public class DLHttp {
         private Retrofit.Builder mRetrofit;
 
         private String mBaseUrl;
-
-        private Converter.Factory mFactory;
 
         private Interceptor mLoggingInterceptor = null;
 
@@ -87,7 +84,7 @@ public class DLHttp {
         }
 
         public Builder addConverterFactory(Converter.Factory factory) {
-            mFactory = factory;
+            mRetrofit.addConverterFactory(factory);
             return this;
         }
 
@@ -128,11 +125,6 @@ public class DLHttp {
                 mRetrofit.baseUrl(mBaseUrl);
             } else {
                 throw new IllegalArgumentException("please setup the baseUrl");
-            }
-            if (mFactory != null) {
-                mRetrofit.addConverterFactory(mFactory);
-            } else {
-                mRetrofit.addConverterFactory(GsonConverterFactory.create());
             }
             if (DLFrame.getInstance().isDebug()) {
                 if (mLoggingInterceptor != null) {

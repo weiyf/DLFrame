@@ -66,10 +66,10 @@ public abstract class BaseDBAdapter<T> extends RecyclerView.Adapter<BindingViewH
     protected int mLastPosition = -1;
     //    protected Presenter mPresenter;
     private Decorator mDecorator;
-    private OnItemClickListener<T> mOnItemClickListener;
-    private OnItemChildClickListener<T> mOnItemChildClickListener;
-    private OnItemLongClickListener<T> mOnItemLongClickListener;
-    private OnItemChildLongClickListener<T> mOnItemChildLongClickListener;
+    private OnItemClickListener mOnItemClickListener;
+    private OnItemChildClickListener mOnItemChildClickListener;
+    private OnItemLongClickListener mOnItemLongClickListener;
+    private OnItemChildLongClickListener mOnItemChildLongClickListener;
     private BaseAnimation mCustomAnimation;
     private BaseAnimation mSelectAnimation = new AlphaInAnimation();
     private LinearLayout mHeaderLayout;
@@ -572,35 +572,35 @@ public abstract class BaseDBAdapter<T> extends RecyclerView.Adapter<BindingViewH
         mDecorator = decorator;
     }
 
-    public OnItemClickListener<T> getOnItemClickListener() {
+    public OnItemClickListener getOnItemClickListener() {
         return mOnItemClickListener;
     }
 
-    public void setOnItemClickListener(OnItemClickListener<T> onItemClickListener) {
+    public <D, V> void setOnItemClickListener(OnItemClickListener<D, V> onItemClickListener) {
         mOnItemClickListener = onItemClickListener;
     }
 
-    public OnItemChildClickListener<T> getOnItemChildClickListener() {
+    public OnItemChildClickListener getOnItemChildClickListener() {
         return mOnItemChildClickListener;
     }
 
-    public void setOnItemChildClickListener(OnItemChildClickListener<T> onItemChildClickListener) {
+    public <D, V> void setOnItemChildClickListener(OnItemChildClickListener<D, V> onItemChildClickListener) {
         mOnItemChildClickListener = onItemChildClickListener;
     }
 
-    public OnItemLongClickListener<T> getOnItemLongClickListener() {
+    public OnItemLongClickListener getOnItemLongClickListener() {
         return mOnItemLongClickListener;
     }
 
-    public void setOnItemLongClickListener(OnItemLongClickListener<T> onItemLongClickListener) {
+    public <D, V> void setOnItemLongClickListener(OnItemLongClickListener<D, V> onItemLongClickListener) {
         mOnItemLongClickListener = onItemLongClickListener;
     }
 
-    public OnItemChildLongClickListener<T> getOnItemChildLongClickListener() {
+    public OnItemChildLongClickListener getOnItemChildLongClickListener() {
         return mOnItemChildLongClickListener;
     }
 
-    public void setOnItemChildLongClickListener(OnItemChildLongClickListener<T> onItemChildLongClickListener) {
+    public <D, V> void setOnItemChildLongClickListener(OnItemChildLongClickListener<D, V> onItemChildLongClickListener) {
         mOnItemChildLongClickListener = onItemChildLongClickListener;
     }
 

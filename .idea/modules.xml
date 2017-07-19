@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/DLFrame.iml" filepath="$PROJECT_DIR$/DLFrame.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/dlframe/dlframe.iml" filepath="$PROJECT_DIR$/dlframe/dlframe.iml" />
     </modules>
   </component>

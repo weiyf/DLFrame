@@ -1,5 +1,6 @@
 package cn.weiyf.dlframe;
 
+import android.app.Application;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.content.res.Configuration;
@@ -9,6 +10,8 @@ import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
+
+
 
 /**
  * Created by Administrator on 2017/4/25.
@@ -43,8 +46,9 @@ public class DLFrame {
         this.debug = isDebug;
     }
 
-    public void init(Context context) {
-        sContext = context;
+
+    public void init(Application application) {
+        sContext = application.getApplicationContext();
     }
 
     public Context getContext() {
@@ -75,7 +79,7 @@ public class DLFrame {
         return ContextCompat.getColor(getContext(), id);
     }
 
-    public String getString(@StringRes int id){
+    public String getString(@StringRes int id) {
         return getResources().getString(id);
     }
 
