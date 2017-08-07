@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import cn.weiyf.dlframe.entity.DateDifference;
 
@@ -71,6 +72,7 @@ public class DateUtils {
      */
     public static SimpleDateFormat getSimpleDateFormat(String pattern) {
         SimpleDateFormat format = local.get();
+        format.setTimeZone(TimeZone.getTimeZone("GMT+8"));
         format.applyPattern(pattern);
         return format;
     }
@@ -255,8 +257,34 @@ public class DateUtils {
      * @return DateDifference实体类，内封装有获取相差的毫秒、秒、分钟、小时、天的方法
      */
     public static DateDifference getTwoDataDifference(String str) {
-        return getTwoDataDifference(new Date(), string2Date(str));
+        Date now = new Date();
+        Date date = string2Date(str);
+        if (now.after(date)) {
+            return getTwoDataDifference(now, date);
+        } else {
+            return getTwoDataDifference(date, now);
+        }
     }
+
+    public static String getTwoDataDifferenceString(String str) {
+        Date now = new Date();
+        Date date = string2Date(str);
+        if (now.after(date)) {
+            return getTwoDataDifferenceString(now, date);
+        } else {
+            return getTwoDataDifferenceString(date, now);
+        }
+    }
+
+    public static String getTwoDataDifferenceString(Date date1, Date date2) {
+        long millis = date1.getTime() - date2.getTime();
+        int day = (int) (millis / DAY);
+        int hour = (int) ((millis - day * DAY) / HOUR);
+        int min = (int) ((millis - day * DAY - hour * HOUR) / MIN);
+        int sencond = (int) ((millis - day * DAY - hour * HOUR - min * MIN) / SEC);
+        return day + "天" + hour + "时" + min + "分" + sencond + "秒";
+    }
+
 
     /**
      * 得到二个日期间的时间差
@@ -268,6 +296,7 @@ public class DateUtils {
     public static DateDifference getTwoDataDifference(String str1, String str2) {
         return getTwoDataDifference(string2Date(str1), string2Date(str2));
     }
+
 
     /**
      * 得到二个日期间的时间差

@@ -37,7 +37,7 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'me.yokeyword:fragmentation-core:1.0.7'
+    compile 'me.yokeyword:fragmentation-core:1.1.0'
 
     // support
     compile "com.android.support:appcompat-v7:$supportVersion"
@@ -90,7 +90,7 @@ publish {
     userOrg = 'weiyf'
     groupId = 'cn.weiyf.lib'
     artifactId = 'DLFrame'
-    publishVersion = '1.0.54'
+    publishVersion = '1.0.57'
     desc = 'DLFrame'
     website = 'https://github.com/weiyf/DLFrame'
     bintrayUser = bintrayUserVal

@@ -93,6 +93,12 @@ public class SwipeBackLayout extends FrameLayout {
 
     private boolean mCallOnDestroyView;
 
+    private boolean mInLayout;
+
+    private int mContentLeft;
+    private int mContentTop;
+
+
     /**
      * The set of listeners to be sent events through.
      */
@@ -269,6 +275,23 @@ public class SwipeBackLayout extends FrameLayout {
     }
 
     @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        mInLayout = true;
+        if (mContentView != null)
+            mContentView.layout(mContentLeft, mContentTop,
+                    mContentLeft + mContentView.getMeasuredWidth(),
+                    mContentTop + mContentView.getMeasuredHeight());
+        mInLayout = false;
+    }
+
+    @Override
+    public void requestLayout() {
+        if (!mInLayout) {
+            super.requestLayout();
+        }
+    }
+
+    @Override
     public void computeScroll() {
         mScrimOpacity = 1 - mScrollPercent;
         if (mScrimOpacity >= 0) {
@@ -355,7 +378,7 @@ public class SwipeBackLayout extends FrameLayout {
 
                 if (mPreFragment == null) {
                     if (mFragment != null) {
-                        List<Fragment> fragmentList = FragmentationHack.getActiveFragments(((Fragment)mFragment).getFragmentManager());
+                        List<Fragment> fragmentList = FragmentationHack.getActiveFragments(((Fragment) mFragment).getFragmentManager());
                         if (fragmentList != null && fragmentList.size() > 1) {
                             int index = fragmentList.indexOf(mFragment);
                             for (int i = index - 1; i >= 0; i--) {
@@ -394,10 +417,12 @@ public class SwipeBackLayout extends FrameLayout {
             super.onViewPositionChanged(changedView, left, top, dx, dy);
 
             if ((mCurrentSwipeOrientation & EDGE_LEFT) != 0) {
-                mScrollPercent = Math.abs((float) left / (getWidth() + mShadowLeft.getIntrinsicWidth()));
+                mScrollPercent = Math.abs((float) left / (mContentView.getWidth() + mShadowLeft.getIntrinsicWidth()));
             } else if ((mCurrentSwipeOrientation & EDGE_RIGHT) != 0) {
                 mScrollPercent = Math.abs((float) left / (mContentView.getWidth() + mShadowRight.getIntrinsicWidth()));
             }
+            mContentLeft = left;
+            mContentTop = top;
             invalidate();
 
             if (mListeners != null && !mListeners.isEmpty()
@@ -484,7 +509,11 @@ public class SwipeBackLayout extends FrameLayout {
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         if (!mEnable) return super.onInterceptTouchEvent(ev);
-        return mHelper.shouldInterceptTouchEvent(ev);
+        try {
+            return mHelper.shouldInterceptTouchEvent(ev);
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override
