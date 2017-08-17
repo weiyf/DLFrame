@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 
 import cn.weiyf.dlframe.R;
 
@@ -24,7 +25,9 @@ public class LoadingDialogFragment extends DialogFragment {
         if (this.isAdded() || isVisible()) {
             return;
         }
-        super.show(manager, tag);
+        FragmentTransaction fragmentTransaction = manager.beginTransaction();
+        fragmentTransaction.add(this, tag);
+        fragmentTransaction.commitAllowingStateLoss();
     }
 
 
@@ -52,6 +55,11 @@ public class LoadingDialogFragment extends DialogFragment {
         if (mOnDismissListener != null) {
             mOnDismissListener.onDismiss(dialog);
         }
+    }
+
+    @Override
+    public void dismiss() {
+        this.dismissAllowingStateLoss();
     }
 
     @Override

@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.trello.rxlifecycle2.LifecycleProvider;
 import com.trello.rxlifecycle2.LifecycleTransformer;
@@ -22,7 +23,6 @@ import com.trello.rxlifecycle2.android.RxLifecycleAndroid;
 
 import cn.weiyf.dlframe.DLFrame;
 import cn.weiyf.dlframe.loading.LoadingDialogFragment;
-import es.dmoral.toasty.Toasty;
 import io.reactivex.Observable;
 import io.reactivex.subjects.BehaviorSubject;
 import me.yokeyword.fragmentation.ExtraTransaction;
@@ -368,26 +368,9 @@ public abstract class BaseCompatActivity extends AppCompatActivity implements IS
         mDialogFragment.dismiss();
     }
 
-    public void showNormal(String normal) {
-        Toasty.normal(DLFrame.getInstance().getContext(), normal).show();
+    public void showToast(String msg) {
+        Toast.makeText(DLFrame.getInstance().getContext(), msg, Toast.LENGTH_SHORT).show();
     }
-
-    public void showInfo(String info) {
-        Toasty.info(DLFrame.getInstance().getContext(), info).show();
-    }
-
-    public void showSuccess(String success) {
-        Toasty.success(DLFrame.getInstance().getContext(), success).show();
-    }
-
-    public void showError(String error) {
-        Toasty.error(DLFrame.getInstance().getContext(), error).show();
-    }
-
-    public void showWarning(String warning) {
-        Toasty.warning(DLFrame.getInstance().getContext(), warning).show();
-    }
-
 
     public Snackbar showSnackBar(View contentView, String string) {
         Snackbar snackbar = Snackbar.make(contentView, string, Snackbar.LENGTH_SHORT);
